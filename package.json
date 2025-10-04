@@ -1,0 +1,31 @@
+{
+  "name": "krop-rad2.0",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "turbo dev",
+    "build": "turbo build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/illiayatsentyuk/KropRad2.0.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/illiayatsentyuk/KropRad2.0.git/issues"
+  },
+  "homepage": "https://github.com/illiayatsentyuk/KropRad2.0.git#readme",
+  "packageManager":"npm@11.3.0",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "devDependencies": {
+    "turbo": "^2.5.6"
+  }
+}

@@ -1,10 +1,12 @@
-
+import { Article } from 'src/articles/entity/article.entity';
+import { Role } from 'src/enum/role.enum';
 import {
     Entity,
     PrimaryGeneratedColumn,
     Column,
     CreateDateColumn,
     UpdateDateColumn,
+    OneToMany
   } from 'typeorm';
 
   @Entity()
@@ -14,6 +16,9 @@ import {
   
     @Column()
     email: string;
+
+    @Column()
+    name: string;
   
     @Column()
     hash: string;
@@ -26,5 +31,11 @@ import {
   
     @UpdateDateColumn()
     updatedAt: Date;
+
+    @OneToMany(()=>Article, (article)=>article.user)
+    articles: Article[]
+
+    @Column({ type: 'enum', enum: Role, default: Role.USER })
+    role: Role;
 }
   

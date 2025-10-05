@@ -7,8 +7,10 @@ import { AuthModule } from './auth/auth.module';
 import { AtGuard } from './common/guards/at.guard';
 import { APP_GUARD } from '@nestjs/core';
 import { UsersModule } from './users/users.module';
-
-//postgresql://postgres.rorijfampwgnvuoglolx:[YOUR-PASSWORD]@aws-1-eu-north-1.pooler.supabase.com:5432/postgres
+import { Article } from './articles/entity/article.entity';
+import { ArticlesModule } from './articles/articles.module';
+import { ReactionModule } from './reaction/reaction.module';
+import { Reaction } from './reaction/entity/reaction.entity';
 
 @Module({
   imports: [
@@ -19,11 +21,13 @@ import { UsersModule } from './users/users.module';
       port: 5432,
       username: 'postgres',
       password: 'I562530y2009',
-      entities: [User],
+      entities: [User, Article, Reaction],
       synchronize: true,
     }),
     AuthModule,
     UsersModule,
+    ArticlesModule,
+    ReactionModule,
   ],
   controllers: [AppController],
   providers: [

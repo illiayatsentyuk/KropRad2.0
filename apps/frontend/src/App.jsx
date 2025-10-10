@@ -49,19 +49,19 @@ function App() {
   if (isAdmin && isAuthenticated) {
     routes = (
       <BrowserRouter>
-      <Routes>
-        <Route path="/admin/auth" element={<AuthPage />} />
-        <Route path="/" element={<AdminLayout />}>
-          <Route path="/" element={<HeroPage />} />
-          <Route path="/articles" element={<ArticlesPage />} />
-          <Route path="/create-article" element={<CreateArticle />} />
-          <Route path="/edit-article/:id" element={<CreateArticle />} />
-          <Route path="/article/:id" element={<ArticlePage />} />
-        </Route>
-        <Route path="*" element={<NotFoundPage />} />
-      </Routes>
-    </BrowserRouter>
-      )
+        <Routes>
+          <Route path="/admin/auth" element={<AuthPage />} />
+          <Route path="/" element={<AdminLayout />}>
+            <Route path="/" element={<HeroPage />} />
+            <Route path="/articles" element={<ArticlesPage />} />
+            <Route path="/create-article" element={<CreateArticle />} />
+            <Route path="/edit-article/:id" element={<CreateArticle />} />
+            <Route path="/article/:id" element={<ArticlePage />} />
+          </Route>
+          <Route path="*" element={<NotFoundPage />} />
+        </Routes>
+      </BrowserRouter>
+    )
   }
 
   return (

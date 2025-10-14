@@ -86,7 +86,7 @@ export class ArticlesService {
         });
 
         // 3️⃣ Заголовок
-        const title = blocks.find((b) => b.type === 'heading')?.content || 'Без назви';
+        const title = blocks.find((b) => b.type === 'heading')?.content || blocks.find((b) => b.type === 'paragraph')?.content || 'Без назви';
 
         // 4️⃣ Зберігаємо в базу
         const article = this.articleRepository.create({

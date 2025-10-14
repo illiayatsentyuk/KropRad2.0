@@ -46,14 +46,6 @@ export const CreateArticleForm = ({ article, isEdit }) => {
             <form ref={formRef} onSubmit={handleSubmit} className="flex flex-col gap-4">
                 {isEdit ? (
                     <>
-                        <input
-                            type="text"
-                            placeholder="Title"
-                            name="title"
-                            defaultValue={article?.title}
-                            required
-                            className="w-full px-4 py-3.5 text-[15px] bg-[#F4F6FA] border-2 border-[#E9ECF2] rounded-lg text-[#1E1E1E] transition-all duration-300 outline-none focus:border-[#3F7EF7] focus:bg-white"
-                        />
                         <div className="relative">
                             <input
                                 type="file"
@@ -69,14 +61,7 @@ export const CreateArticleForm = ({ article, isEdit }) => {
                         </div>
                     </>
                 ) : (
-                    <>                        <input
-                        type="text"
-                        placeholder="Title"
-                        name="title"
-                        defaultValue={article?.title}
-                        required
-                        className="w-full px-4 py-3.5 text-[15px] bg-[#F4F6FA] border-2 border-[#E9ECF2] rounded-lg text-[#1E1E1E] transition-all duration-300 outline-none focus:border-[#3F7EF7] focus:bg-white"
-                    />
+                    <>
                         <div className="relative">
 
                             <input

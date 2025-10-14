@@ -6,49 +6,63 @@ const toAbsolute = (src) => {
     return `${API_ORIGIN}/${src}`
 }
 
+const rewriteUploads = (html) => {
+    if (!html) return ''
+    try {
+        return html
+            .replace(/src=\"\/(uploads\/[^\"]+)\"/g, (_, p1) => `src=\"${API_ORIGIN}/${p1}\"`)
+            .replace(/src='\/(uploads\/[^']+)'/g, (_, p1) => `src='${API_ORIGIN}/${p1}'`)
+    } catch {
+        return html
+    }
+}
+
 export const ArticleRenderer = ({ blocks }) => {
     if (!blocks || !Array.isArray(blocks) || blocks.length === 0) {
         return null
     }
 
     return (
-        <div className="prose prose-lg max-w-none">
+        <div className="prose prose-lg max-w-none flex flex-col gap-4">
             {blocks.map((block, index) => {
                 if (!block || !block.type) return null
                 switch (block.type) {
                     case 'heading':
                         return (
-                            <h2 key={index} className="text-3xl font-bold text-[#0A1E63] my-6">
-                                {block.content}
-                            </h2>
+                            <h2
+                                key={index}
+                                className="text-3xl font-bold text-[#0A1E63] my-6"
+                                dangerouslySetInnerHTML={{ __html: rewriteUploads(block.html || '') }}
+                            />
                         )
+                    case 'unordered-list': {
+                        if (!Array.isArray(block.items) || block.items.length === 0) return null
+                        return (
+                            <ul key={index} className="list-disc pl-6 my-4">
+                                {block.items.map((item, i) => (
+                                    <li key={i} className="text-[#1E1E1E]" dangerouslySetInnerHTML={{ __html: rewriteUploads(item?.html || '') }} />
+                                ))}
+                            </ul>
+                        )
+                    }
+                    case 'ordered-list': {
+                        if (!Array.isArray(block.items) || block.items.length === 0) return null
+                        return (
+                            <ol key={index} className="list-decimal pl-6 my-4">
+                                {block.items.map((item, i) => (
+                                    <li key={i} className="text-[#1E1E1E]" dangerouslySetInnerHTML={{ __html: rewriteUploads(item?.html || '') }} />
+                                ))}
+                            </ol>
+                        )
+                    }
                     case 'paragraph': {
-                        const hasLinks = Array.isArray(block.links) && block.links?.length
-                        const hasImages = Array.isArray(block.images) && block.images?.length
                         return (
                             <div key={index} className="mb-5">
-                                {block.content && (
-                                    <p className="text-[#1E1E1E] text-lg leading-relaxed whitespace-pre-wrap">
-                                        {block.content}
-                                    </p>
-                                )}
-                                {hasLinks ? (
-                                    <ul className="list-disc pl-6 mt-2">
-                                        {block.links.map((l, i) => (
-                                            <li key={i}>
-                                                <a href={l.href} target="_blank" rel="noreferrer" className="text-[#2B59C3] hover:underline">
-                                                    {l.text || l.href}
-                                                </a>
-                                            </li>
-                                        ))}
-                                    </ul>
-                                ) : null}
-                                {hasImages ? (
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-3">
-                                        {block.images.map((img, i) => (
-                                            <img key={i} src={toAbsolute(img.src)} alt="" className="rounded-lg shadow" />
-                                        ))}
-                                    </div>
+                                {block.html ? (
+                                    <div
+                                        className="text-[#1E1E1E] text-lg leading-relaxed container-image"
+                                        dangerouslySetInnerHTML={{ __html: rewriteUploads(block.html) }}
+                                    />
                                 ) : null}
                             </div>
                         )
@@ -57,6 +71,14 @@ export const ArticleRenderer = ({ blocks }) => {
                         return (
                             <div key={index} className="my-6">
                                 <img src={toAbsolute(block.src)} alt="" className="rounded-xl shadow" />
+                            </div>
+                        )
+                    case 'images':
+                        return (
+                            <div key={index} className="my-6 grid grid-cols-2 gap-4 ">
+                                {block.images.map((image, i) => (
+                                    <img src={toAbsolute(image.src)} alt="" className="rounded-xl shadow" />
+                                ))}
                             </div>
                         )
                     case 'link':

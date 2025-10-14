@@ -6,10 +6,19 @@ import { useSelector, useDispatch } from "react-redux"
 import { setArticles, deleteArticle as deleteArticleAction } from "../store/store"
 const getExcerptFromBlocks = (blocks) => {
     if (!Array.isArray(blocks)) return ""
-    const firstParagraph = blocks.find(b => b?.type === 'paragraph' && b.content)
-    if (firstParagraph?.content) return firstParagraph.content.slice(0, 180) + (firstParagraph.content.length > 180 ? '…' : '')
-    const firstHeading = blocks.find(b => b?.type === 'heading' && b.content)
-    return firstHeading?.content || ""
+    const strip = (html) => {
+        if (!html) return ""
+        const tmp = document.createElement('div')
+        tmp.innerHTML = html
+        const text = tmp.textContent || tmp.innerText || ""
+        return text.trim()
+    }
+    const firstParagraph = blocks.find(b => b?.type === 'paragraph' && (b.html || b.content))
+    const paraText = firstParagraph ? strip(firstParagraph.html || firstParagraph.content) : ""
+    if (paraText) return paraText.slice(0, 180) + (paraText.length > 180 ? '…' : '')
+    const firstHeading = blocks.find(b => b?.type === 'heading' && (b.html || b.content))
+    const headText = firstHeading ? strip(firstHeading.html || firstHeading.content) : ""
+    return headText
 }
 
 export const ArticlesPage = () => {

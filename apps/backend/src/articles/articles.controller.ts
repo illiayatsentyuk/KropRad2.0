@@ -48,16 +48,27 @@ export class ArticlesController {
             }),
         }),
     )
-    async createArticle(@UploadedFile() file: Express.Multer.File) {
+    async createArticle(@UploadedFile() file: Express.Multer.File, @GetCurrentUserId() userId: number) {
         console.log(file)
-        return this.articlesService.createArticle(file.path);
+        return this.articlesService.createArticle(file.path, userId);
     }
 
     @Roles(Role.ADMIN)
     @UseGuards(RolesGuard)
     @Put("/:id")
-    updateArticle(@Param("id") id: number, @Body() article: CreateArticleDto) {
-        return this.articlesService.updateArticle(id, article)
+    @UseInterceptors(
+        FileInterceptor('file', {
+            storage: diskStorage({
+                destination: './uploads',
+                filename: (_, file, cb) => {
+                    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+                    cb(null, uniqueSuffix + extname(file.originalname));
+                },
+            }),
+        }),
+    )
+    updateArticle(@Param("id") id: number, @UploadedFile() file: Express.Multer.File) {
+        return this.articlesService.updateArticle(id, file.path)
     }
 
     @Roles(Role.ADMIN)

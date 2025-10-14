@@ -15,7 +15,7 @@ export const CreateArticleForm = ({ article, isEdit }) => {
         e.preventDefault()
         const form = formRef.current
         const formData = new FormData(form)
-        
+
         if (isEdit) {
             const values = Object.fromEntries(formData.entries())
             updateArticle(article.id, values, accessToken).then(data => {
@@ -25,7 +25,10 @@ export const CreateArticleForm = ({ article, isEdit }) => {
         } else {
             createArticle(formData, accessToken).then(data => {
                 console.log(data)
-                dispatch(addArticle(data))
+                const created = data?.article || data
+                if (created) {
+                    dispatch(addArticle(created))
+                }
                 navigate("/articles")
             })
         }
@@ -51,29 +54,44 @@ export const CreateArticleForm = ({ article, isEdit }) => {
                             required
                             className="w-full px-4 py-3.5 text-[15px] bg-[#F4F6FA] border-2 border-[#E9ECF2] rounded-lg text-[#1E1E1E] transition-all duration-300 outline-none focus:border-[#3F7EF7] focus:bg-white"
                         />
-                        <textarea
-                            placeholder="Description"
-                            name="description"
-                            defaultValue={article?.description}
-                            required
-                            rows="5"
-                            className="w-full px-4 py-3.5 text-[15px] bg-[#F4F6FA] border-2 border-[#E9ECF2] rounded-lg text-[#1E1E1E] transition-all duration-300 outline-none focus:border-[#3F7EF7] focus:bg-white resize-vertical"
-                        />
+                        <div className="relative">
+                            <input
+                                type="file"
+                                name="file"
+                                accept=".docx"
+                                required
+                                onChange={(e) => setFileName(e.target.files[0]?.name || "")}
+                                className="w-full px-4 py-3.5 text-[15px] bg-[#F4F6FA] border-2 border-[#E9ECF2] rounded-lg text-[#1E1E1E] transition-all duration-300 outline-none focus:border-[#3F7EF7] focus:bg-white file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-[#2B59C3] file:text-white hover:file:bg-[#0A1E63] file:cursor-pointer"
+                            />
+                            {fileName && (
+                                <p className="mt-2 text-sm text-[#6C7A89]">Selected: {fileName}</p>
+                            )}
+                        </div>
                     </>
                 ) : (
-                    <div className="relative">
-                        <input
-                            type="file"
-                            name="file"
-                            accept=".docx"
-                            required
-                            onChange={(e) => setFileName(e.target.files[0]?.name || "")}
-                            className="w-full px-4 py-3.5 text-[15px] bg-[#F4F6FA] border-2 border-[#E9ECF2] rounded-lg text-[#1E1E1E] transition-all duration-300 outline-none focus:border-[#3F7EF7] focus:bg-white file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-[#2B59C3] file:text-white hover:file:bg-[#0A1E63] file:cursor-pointer"
-                        />
-                        {fileName && (
-                            <p className="mt-2 text-sm text-[#6C7A89]">Selected: {fileName}</p>
-                        )}
-                    </div>
+                    <>                        <input
+                        type="text"
+                        placeholder="Title"
+                        name="title"
+                        defaultValue={article?.title}
+                        required
+                        className="w-full px-4 py-3.5 text-[15px] bg-[#F4F6FA] border-2 border-[#E9ECF2] rounded-lg text-[#1E1E1E] transition-all duration-300 outline-none focus:border-[#3F7EF7] focus:bg-white"
+                    />
+                        <div className="relative">
+
+                            <input
+                                type="file"
+                                name="file"
+                                accept=".docx"
+                                required
+                                onChange={(e) => setFileName(e.target.files[0]?.name || "")}
+                                className="w-full px-4 py-3.5 text-[15px] bg-[#F4F6FA] border-2 border-[#E9ECF2] rounded-lg text-[#1E1E1E] transition-all duration-300 outline-none focus:border-[#3F7EF7] focus:bg-white file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-[#2B59C3] file:text-white hover:file:bg-[#0A1E63] file:cursor-pointer"
+                            />
+                            {fileName && (
+                                <p className="mt-2 text-sm text-[#6C7A89]">Selected: {fileName}</p>
+                            )}
+                        </div>
+                    </>
                 )}
                 <button
                     type="submit"

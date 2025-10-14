@@ -10,7 +10,7 @@ export class ArticleDto {
     title: string;
 
     @Expose()
-    description: string;
+    content: any[];
 
     @Expose()
     @Transform(({obj}) => {

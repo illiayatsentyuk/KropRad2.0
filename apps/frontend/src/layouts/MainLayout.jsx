@@ -27,8 +27,8 @@ const links = [
 export const MainLayout = () => {
     return (
         <>
-            <div className="flex relative h-screen bg-[#081A4B] text-[#2C2C2C] w-full h-full">
-                <div className="overflow-y-auto flex flex-col items-center p-8 gap-6 h-screen bg-[#081A4B] text-[#2C2C2C] w-[300px] h-full fixed left-0 top-0 pt-18">
+            <div className="flex relative min-h-screen bg-[#081A4B] text-[#2C2C2C] w-full">
+                <div className="overflow-y-auto flex flex-col items-center p-8 gap-6 bg-[#081A4B] text-[#2C2C2C] w-[300px] h-screen fixed left-0 top-0 pt-18">
                     <Link to="/" className="hover:scale-110 transition-all duration-300">
                         <img src={logo} alt="logo" className="w-[70px] h-[70px]" />
                     </Link>
@@ -38,7 +38,9 @@ export const MainLayout = () => {
                         </Link>
                     ))}
                 </div>
-                <Outlet />
+                <div className="flex-1 min-h-screen ml-[300px] bg-[#F4F6FA]">
+                    <Outlet />
+                </div>
             </div>
         </>
     )

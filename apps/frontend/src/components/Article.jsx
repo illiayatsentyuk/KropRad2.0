@@ -14,16 +14,20 @@ export const Article = ({ title, description, author, id, handleDelete, handleEd
                     {title}
                 </Link>
             </h2>
-            <p className="text-[15px] text-[#1E1E1E] leading-relaxed">
-                {description}
-            </p>
+            {description ? (
+                <p className="text-[15px] text-[#1E1E1E] leading-relaxed">
+                    {description}
+                </p>
+            ) : null}
             <div className="flex items-center gap-2 mt-2 pt-3 border-t border-[#E9ECF2]">
                 <svg className="w-5 h-5 text-[#6C7A89]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                 </svg>
-                <span className="text-sm font-medium text-[#6C7A89]">
-                    {author}
-                </span>
+                {author ? (
+                    <span className="text-sm font-medium text-[#6C7A89]">
+                        {author}
+                    </span>
+                ) : null}
             </div>
             {isAdmin && (
                 <div className="flex justify-between items-center gap-2 mt-2 pt-3 border-t border-[#E9ECF2]">

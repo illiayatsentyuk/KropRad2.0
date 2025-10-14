@@ -1,3 +1,5 @@
+import { ArticleRenderer } from "./ArticleRenderer"
+
 export const BigArticle = ({ article }) => {
     if (!article) {
         return (
@@ -32,11 +34,7 @@ export const BigArticle = ({ article }) => {
             </header>
 
             {/* Article Content */}
-            <div className="prose prose-lg max-w-none">
-                <p className="text-[#1E1E1E] text-lg leading-relaxed whitespace-pre-wrap">
-                    {article.description}
-                </p>
-            </div>
+            <ArticleRenderer blocks={article.content} />
         </article>
     )
 }

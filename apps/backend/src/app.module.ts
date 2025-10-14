@@ -11,6 +11,8 @@ import { Article } from './articles/entity/article.entity';
 import { ArticlesModule } from './articles/articles.module';
 import { ReactionModule } from './reaction/reaction.module';
 import { Reaction } from './reaction/entity/reaction.entity';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 
 @Module({
   imports: [
@@ -28,6 +30,10 @@ import { Reaction } from './reaction/entity/reaction.entity';
     UsersModule,
     ArticlesModule,
     ReactionModule,
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'uploads'), // Path to your static files (e.g., 'public' folder)
+      serveRoot: '/uploads'
+    }),
   ],
   controllers: [AppController],
   providers: [

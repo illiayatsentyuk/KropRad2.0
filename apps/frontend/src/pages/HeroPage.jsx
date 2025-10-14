@@ -8,12 +8,6 @@ export const HeroPage = () => {
     { immediate: true }
   )
 
-  function getDa(){
-    getData({ ignoreCache: true })
-    setUserData(data)
-  }
-  console.log(data);
-
   useEffect(() => {
     setUserData(data)
     console.log(userData)

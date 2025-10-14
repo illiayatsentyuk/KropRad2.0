@@ -4,12 +4,11 @@ export const fetchArticles = async () => {
     return data
 }
 
-export const createArticle = async (article, accessToken) => {
+export const createArticle = async (formData, accessToken) => {
     const response = await fetch('http://localhost:3000/articles', {
         method: 'POST',
-        body: JSON.stringify(article),
+        body: formData,
         headers: {
-            'Content-Type': 'application/json',
             'Authorization': `Bearer ${accessToken}`
         }
     })

@@ -16,8 +16,8 @@ import {
     @Column()
     title: string;
   
-    @Column()
-    description: string;
+    @Column({ type: 'jsonb' })
+    content: any[];
   
     @ManyToOne(()=>User,(user)=>user.articles)
     user: User

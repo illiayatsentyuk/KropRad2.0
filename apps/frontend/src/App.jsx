@@ -40,6 +40,7 @@ function App() {
         <Route path="/" element={<MainLayout />}>
           <Route path="/" element={<HeroPage />} />
           <Route path="/articles" element={<ArticlesPage />} />
+          <Route path="/article/:id" element={<ArticlePage />} />
         </Route>
         <Route path="*" element={<NotFoundPage />} />
       </Routes>

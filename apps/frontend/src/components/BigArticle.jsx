@@ -34,7 +34,7 @@ export const BigArticle = ({ article }) => {
             </header>
 
             {/* Article Content */}
-            <ArticleRenderer blocks={article.content} />
+            <ArticleRenderer html={article.content} />
         </article>
     )
 }

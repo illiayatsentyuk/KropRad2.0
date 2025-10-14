@@ -4,12 +4,17 @@ import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import { useSelector, useDispatch } from "react-redux"
 import { setArticles, deleteArticle as deleteArticleAction } from "../store/store"
-const getExcerptFromBlocks = (blocks) => {
-    if (!Array.isArray(blocks)) return ""
-    const firstParagraph = blocks.find(b => b?.type === 'paragraph' && b.content)
-    if (firstParagraph?.content) return firstParagraph.content.slice(0, 180) + (firstParagraph.content.length > 180 ? '…' : '')
-    const firstHeading = blocks.find(b => b?.type === 'heading' && b.content)
-    return firstHeading?.content || ""
+const getExcerptFromHtml = (html) => {
+    if (!html || typeof html !== 'string') return ""
+    try {
+        const tmp = document.createElement('div')
+        tmp.innerHTML = html
+        const text = tmp.textContent || tmp.innerText || ""
+        const trimmed = text.trim()
+        return trimmed.slice(0, 180) + (trimmed.length > 180 ? '…' : '')
+    } catch {
+        return ""
+    }
 }
 
 export const ArticlesPage = () => {
@@ -48,7 +53,7 @@ export const ArticlesPage = () => {
                     key={article.id}
                     id={article.id}
                     title={article.title}
-                    description={getExcerptFromBlocks(article.content)}
+                    description={getExcerptFromHtml(article.content)}
                     author={article.user?.name || ""}
                     handleDelete={handleDelete}
                     handleEditArticle={handleEditArticle}

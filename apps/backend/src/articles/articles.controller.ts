@@ -1,6 +1,6 @@
 import {
     Controller, Post, Get, Put, Delete, Param, Body, UseGuards, UploadedFile,
-    UseInterceptors,
+    UseInterceptors, ParseIntPipe,
 } from '@nestjs/common';
 import { ArticlesService } from './articles.service';
 import { diskStorage } from 'multer';
@@ -30,7 +30,7 @@ export class ArticlesController {
     @Serialize(ArticleDto)
     @Public()
     @Get("/:id")
-    getArticleById(@Param("id") id: number) {
+    getArticleById(@Param("id", ParseIntPipe) id: number) {
         return this.articlesService.getArticleById(id)
     }
 
@@ -67,14 +67,14 @@ export class ArticlesController {
             }),
         }),
     )
-    updateArticle(@Param("id") id: number, @UploadedFile() file: Express.Multer.File) {
+    updateArticle(@Param("id", ParseIntPipe) id: number, @UploadedFile() file: Express.Multer.File) {
         return this.articlesService.updateArticle(id, file.path)
     }
 
     @Roles(Role.ADMIN)
     @UseGuards(RolesGuard)
     @Delete("/:id")
-    deleteArticle(@Param("id") id: number) {
+    deleteArticle(@Param("id", ParseIntPipe) id: number) {
         return this.articlesService.deleteArticle(id)
     }
 }

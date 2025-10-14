@@ -6,10 +6,14 @@ import * as mammoth from 'mammoth';
 import * as fs from 'fs';
 import * as cheerio from 'cheerio';
 import * as path from 'path';
+import { User } from 'src/users/entity/user.entity';
 
 @Injectable()
 export class ArticlesService {
-    constructor(@InjectRepository(Article) private articleRepository: Repository<Article>) { }
+    constructor(
+        @InjectRepository(Article) private articleRepository: Repository<Article>,
+        @InjectRepository(User) private userRepository: Repository<User>,
+    ) { }
 
     async getAllArticles() {
         return this.articleRepository.find({ relations: ['reactions', "user"] })
@@ -22,8 +26,14 @@ export class ArticlesService {
     async createArticle(filePath: string, userId: number) {
         const buffer = fs.readFileSync(filePath);
 
-        // 1️⃣ Конвертація DOCX → HTML
+        // 1️⃣ Конвертуємо DOCX → HTML (зберігаючи стиль)
         const result = await mammoth.convertToHtml({ buffer }, {
+            styleMap: [
+                "p[style-name='Normal'] => p:fresh",
+                "r[style-name='Hyperlink'] => a",
+                "i => em",
+                "b => strong",
+            ],
             convertImage: (mammoth as any).images.inline(async (element) => {
                 const imageBuffer = await element.read('base64');
                 const filename = `image-${Date.now()}.png`;
@@ -33,66 +43,21 @@ export class ArticlesService {
             }),
         });
 
-        // 2️⃣ Парсинг HTML → блоки
-        const $ = cheerio.load(result.value);
-        const blocks: any[] = [];
+        const htmlContent = result.value;
 
-        $('body').children().each((_, el) => {
-            const tag = el.tagName?.toLowerCase();
-            if (!tag) return;
+        // 2️⃣ Визначаємо заголовок
+        const $ = cheerio.load(htmlContent);
+        const title =
+            $('h1').first().text() ||
+            $('h2').first().text() ||
+            'Без назви';
 
-            if (/h\d/.test(tag)) {
-                blocks.push({ type: 'heading', content: $(el).text() });
-            }
-            else if (tag === 'p') {
-                const links: any[] = [];
-                const images: any[] = [];
-
-                // Витягуємо посилання з абзацу
-                $(el).find('a').each((_, a) => {
-                    const href = $(a).attr('href');
-                    const text = $(a).text();
-                    if (href) {
-                        links.push({ href, text });
-                    }
-                });
-
-                // Витягуємо картинки з абзацу
-                $(el).find('img').each((_, img) => {
-                    const src = $(img).attr('src');
-                    if (src) images.push({ src });
-                });
-
-                const text = $(el).clone().children('a,img').remove().end().text().trim();
-
-                if (text || links.length || images.length) {
-                    blocks.push({
-                        type: 'paragraph',
-                        content: text || null,
-                        links: links.length ? links : null,
-                        images: images.length ? images : null,
-                    });
-                }
-            }
-            else if (tag === 'img') {
-                const src = $(el).attr('src');
-                if (src) blocks.push({ type: 'image', src });
-            }
-            else if (tag === 'a') {
-                const href = $(el).attr('href');
-                const text = $(el).text();
-                if (href) blocks.push({ type: 'link', text, href });
-            }
-        });
-
-        // 3️⃣ Заголовок
-        const title = blocks.find((b) => b.type === 'heading')?.content || blocks.find((b) => b.type === 'paragraph')?.content || 'Без назви';
-
-        // 4️⃣ Зберігаємо в базу
+        // 3️⃣ Зберігаємо HTML як є (включно з <img>, <a>, <p>, <strong>, <em> тощо)
+        const user = await this.userRepository.findOne({ where: { id: userId } })
         const article = this.articleRepository.create({
             title,
-            content: blocks,
-            user: { id: userId },
+            content: htmlContent,
+            user: user || undefined,
         });
 
         await this.articleRepository.save(article);
@@ -107,8 +72,14 @@ export class ArticlesService {
     async updateArticle(id: number, filePath: string) {
         const buffer = fs.readFileSync(filePath);
 
-        // 1️⃣ Конвертація DOCX → HTML
+        // 1️⃣ Конвертуємо DOCX → HTML (зберігаючи стиль)
         const result = await mammoth.convertToHtml({ buffer }, {
+            styleMap: [
+                "p[style-name='Normal'] => p:fresh",
+                "r[style-name='Hyperlink'] => a",
+                "i => em",
+                "b => strong",
+            ],
             convertImage: (mammoth as any).images.inline(async (element) => {
                 const imageBuffer = await element.read('base64');
                 const filename = `image-${Date.now()}.png`;
@@ -118,67 +89,20 @@ export class ArticlesService {
             }),
         });
 
-        // 2️⃣ Парсинг HTML → блоки
-        const $ = cheerio.load(result.value);
-        const blocks: any[] = [];
+        const htmlContent = result.value;
 
-        $('body').children().each((_, el) => {
-            const tag = el.tagName?.toLowerCase();
-            if (!tag) return;
+        // 2️⃣ Визначаємо заголовок
+        const $ = cheerio.load(htmlContent);
+        const title =
+            $('h1').first().text() ||
+            $('h2').first().text() ||
+            'Без назви';
 
-            if (/h\d/.test(tag)) {
-                blocks.push({ type: 'heading', content: $(el).text() });
-            }
-            else if (tag === 'p') {
-                const links: any[] = [];
-                const images: any[] = [];
-
-                // Витягуємо посилання з абзацу
-                $(el).find('a').each((_, a) => {
-                    const href = $(a).attr('href');
-                    const text = $(a).text();
-                    if (href) {
-                        links.push({ href, text });
-                    }
-                });
-
-                // Витягуємо картинки з абзацу
-                $(el).find('img').each((_, img) => {
-                    const src = $(img).attr('src');
-                    if (src) images.push({ src });
-                });
-
-                const text = $(el).clone().children('a,img').remove().end().text().trim();
-
-                if (text || links.length || images.length) {
-                    blocks.push({
-                        type: 'paragraph',
-                        content: text || null,
-                        links: links.length ? links : null,
-                        images: images.length ? images : null,
-                    });
-                }
-            }
-            else if (tag === 'img') {
-                const src = $(el).attr('src');
-                if (src) blocks.push({ type: 'image', src });
-            }
-            else if (tag === 'a') {
-                const href = $(el).attr('href');
-                const text = $(el).text();
-                if (href) blocks.push({ type: 'link', text, href });
-            }
-        });
-
-        // 3️⃣ Заголовок
-        const title = blocks.find((b) => b.type === 'heading')?.content || 'Без назви';
-
-        // 4️⃣ Зберігаємо в базу
+        // 3️⃣ Зберігаємо HTML як є (включно з <img>, <a>, <p>, <strong>, <em> тощо)
         const article = await this.articleRepository.update(id, {
             title,
-            content: blocks,
+            content: htmlContent, // тут зберігається весь HTML
         });
-
 
         return {
             message: 'Файл оброблено та оновлено',

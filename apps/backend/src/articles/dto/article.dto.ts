@@ -1,5 +1,4 @@
 import { Expose, Transform } from "class-transformer";
-import { Article } from "../entity/article.entity";
 import { Role } from "src/enum/role.enum";
 
 export class ArticleDto {
@@ -10,11 +9,12 @@ export class ArticleDto {
     title: string;
 
     @Expose()
-    content: any[];
+    content: string;
 
     @Expose()
     @Transform(({obj}) => {
-        return{
+        if (!obj.user) return null
+        return {
             id: obj.user.id,
             email: obj.user.email,
             name: obj.user.name,

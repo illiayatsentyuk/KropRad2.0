@@ -20,18 +20,31 @@ export class ArticlesService {
     }
 
     async createArticle(filePath: string, userId: number) {
-        const buffer = fs.readFileSync(filePath);
+        let buffer: Buffer | null = null;
+        try {
+            buffer = fs.readFileSync(filePath);
+        } catch {
+            if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
+            throw new BadRequestException('Failed to read uploaded file');
+        }
 
-        // 1️⃣ DOCX → HTML
-        const result = await mammoth.convertToHtml({ buffer }, {
-            convertImage: (mammoth as any).images.inline(async (element) => {
-                const imageBuffer = await element.read('base64');
-                const filename = `image-${Date.now()}.png`;
-                const fullPath = `./uploads/${filename}`;
-                fs.writeFileSync(fullPath, Buffer.from(imageBuffer, 'base64'));
-                return { src: `/uploads/${filename}` };
-            }),
-        });
+        let result: { value: string };
+        try {
+            // 1️⃣ DOCX → HTML
+            result = await mammoth.convertToHtml({ buffer }, {
+                convertImage: (mammoth as any).images.inline(async (element) => {
+                    const imageBuffer = await element.read('base64');
+                    const filename = `image-${Date.now()}.png`;
+                    const fullPath = `./uploads/${filename}`;
+                    fs.writeFileSync(fullPath, Buffer.from(imageBuffer, 'base64'));
+                    return { src: `/uploads/${filename}` };
+                }),
+            });
+        } catch (err: any) {
+            // Common when non-docx is uploaded; jszip cannot find central directory
+            if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
+            throw new BadRequestException('Invalid DOCX file. Please upload a valid .docx document.');
+        }
 
         const $ = cheerio.load(result.value);
         const blocks: any[] = [];
@@ -166,18 +179,30 @@ export class ArticlesService {
 
 
     async updateArticle(id: number, filePath: string) {
-        const buffer = fs.readFileSync(filePath);
+        let buffer: Buffer | null = null;
+        try {
+            buffer = fs.readFileSync(filePath);
+        } catch {
+            if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
+            throw new BadRequestException('Failed to read uploaded file');
+        }
 
-        // 1️⃣ DOCX → HTML
-        const result = await mammoth.convertToHtml({ buffer }, {
-            convertImage: (mammoth as any).images.inline(async (element) => {
-                const imageBuffer = await element.read('base64');
-                const filename = `image-${Date.now()}.png`;
-                const fullPath = `./uploads/${filename}`;
-                fs.writeFileSync(fullPath, Buffer.from(imageBuffer, 'base64'));
-                return { src: `/uploads/${filename}` };
-            }),
-        });
+        let result: { value: string };
+        try {
+            // 1️⃣ DOCX → HTML
+            result = await mammoth.convertToHtml({ buffer }, {
+                convertImage: (mammoth as any).images.inline(async (element) => {
+                    const imageBuffer = await element.read('base64');
+                    const filename = `image-${Date.now()}.png`;
+                    const fullPath = `./uploads/${filename}`;
+                    fs.writeFileSync(fullPath, Buffer.from(imageBuffer, 'base64'));
+                    return { src: `/uploads/${filename}` };
+                }),
+            });
+        } catch {
+            if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
+            throw new BadRequestException('Invalid DOCX file. Please upload a valid .docx document.');
+        }
 
         const $ = cheerio.load(result.value);
         const blocks: any[] = [];

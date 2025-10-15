@@ -6,6 +6,7 @@ import { ArticlesService } from './articles.service';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { BadRequestException } from '@nestjs/common';
 import { GetCurrentUserId, Roles } from 'src/common/decorators';
 import { Role } from 'src/enum/role.enum';
 import { CreateArticleDto } from './dto/create-article.dto';
@@ -46,6 +47,15 @@ export class ArticlesController {
                     cb(null, uniqueSuffix + extname(file.originalname));
                 },
             }),
+            limits: { fileSize: 10 * 1024 * 1024 }, // 10MB
+            fileFilter: (_, file, cb) => {
+                const allowedMime = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+                const isDocxExt = extname(file.originalname).toLowerCase() === '.docx';
+                if (file.mimetype === allowedMime && isDocxExt) {
+                    return cb(null, true);
+                }
+                return cb(new BadRequestException('Only .docx files are allowed'), false);
+            },
         }),
     )
     async createArticle(@UploadedFile() file: Express.Multer.File, @GetCurrentUserId() userId: number) {
@@ -65,6 +75,15 @@ export class ArticlesController {
                     cb(null, uniqueSuffix + extname(file.originalname));
                 },
             }),
+            limits: { fileSize: 10 * 1024 * 1024 },
+            fileFilter: (_, file, cb) => {
+                const allowedMime = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+                const isDocxExt = extname(file.originalname).toLowerCase() === '.docx';
+                if (file.mimetype === allowedMime && isDocxExt) {
+                    return cb(null, true);
+                }
+                return cb(new BadRequestException('Only .docx files are allowed'), false);
+            },
         }),
     )
     updateArticle(@Param("id") id: number, @UploadedFile() file: Express.Multer.File) {

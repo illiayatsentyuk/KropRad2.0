@@ -24,6 +24,8 @@ const getExcerptFromBlocks = (blocks) => {
 export const ArticlesPage = () => {
     const dispatch = useDispatch()
     const articles = useSelector((state) => state.articles.articles)
+    const user = useSelector((state) => state.user.user)
+    const isAdmin = user?.role === 'admin'
     const accessToken = localStorage.getItem("access_token")
     const navigate = useNavigate()
     useEffect(() => {
@@ -52,17 +54,41 @@ export const ArticlesPage = () => {
     }
     return (
         <div className="flex flex-col gap-4 w-full items-center justify-start py-10 px-6">
-            {articles.map(article => (
-                <Article
-                    key={article.id}
-                    id={article.id}
-                    title={article.title}
-                    description={getExcerptFromBlocks(article.content)}
-                    author={article.user?.name || ""}
-                    handleDelete={handleDelete}
-                    handleEditArticle={handleEditArticle}
-                />
-            ))}
+            {(!articles || articles.length === 0) ? (
+                <div className="w-full max-w-3xl text-center bg-white rounded-2xl shadow-xl p-12 border border-[#E9ECF2]">
+                    <div className="w-16 h-16 rounded-2xl bg-[#F5F8FF] ring-1 ring-[#E9ECF2] mx-auto flex items-center justify-center text-3xl mb-4">📄</div>
+                    <h2 className="text-3xl font-bold text-[#0A1E63]">Поки що немає статей</h2>
+                    <p className="mt-2 text-[#6C7A89]">Будьте першим, хто створить корисну статтю для спільноти.</p>
+                    <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
+                        {isAdmin ? (
+                            <button
+                                onClick={() => navigate('/create-article')}
+                                className="inline-flex items-center justify-center px-6 py-3 rounded-xl text-white font-semibold shadow-lg bg-gradient-to-r from-[#2B59C3] to-[#3F7EF7] hover:opacity-95 transition"
+                            >
+                                Створити статтю
+                            </button>
+                        ) : null}
+                        <button
+                            onClick={() => navigate('/')}
+                            className="inline-flex items-center justify-center px-6 py-3 rounded-xl font-semibold text-[#0A1E63] bg-white shadow hover:shadow-md ring-1 ring-[#E9ECF2] transition"
+                        >
+                            На головну
+                        </button>
+                    </div>
+                </div>
+            ) : (
+                articles.map(article => (
+                    <Article
+                        key={article.id}
+                        id={article.id}
+                        title={article.title}
+                        description={getExcerptFromBlocks(article.content)}
+                        author={article.user?.name || ""}
+                        handleDelete={handleDelete}
+                        handleEditArticle={handleEditArticle}
+                    />
+                ))
+            )}
         </div>
     )
 }

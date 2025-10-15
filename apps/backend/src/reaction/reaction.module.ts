@@ -7,6 +7,7 @@ import { Reaction } from './entity/reaction.entity';
 @Module({
   controllers: [ReactionController],
   providers: [ReactionService],
-  imports: [TypeOrmModule.forFeature([Reaction])]
+  imports: [TypeOrmModule.forFeature([Reaction])],
+  exports: [ReactionService]
 })
 export class ReactionModule {}

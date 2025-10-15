@@ -6,10 +6,11 @@ import * as mammoth from 'mammoth';
 import * as fs from 'fs';
 import * as cheerio from 'cheerio';
 import * as path from 'path';
+import { ReactionService } from 'src/reaction/reaction.service';
 
 @Injectable()
 export class ArticlesService {
-    constructor(@InjectRepository(Article) private articleRepository: Repository<Article>) { }
+    constructor(@InjectRepository(Article) private articleRepository: Repository<Article>, private reactionService: ReactionService) { }
 
     async getAllArticles() {
         return this.articleRepository.find({ relations: ['reactions', "user"] })
@@ -62,7 +63,18 @@ export class ArticlesService {
                 }
                 blocks.push({ type: 'heading', html: $(el).html()?.trim() });
             }
+            else if (['div', 'span', 'figure', 'table'].includes(tag)) {
+                const innerText = $(el).text().trim();
+                const innerHtml = $(el).html()?.trim();
 
+                // Якщо всередині є текст і він не порожній
+                if (innerText && innerText.length > 0) {
+                    blocks.push({
+                        type: 'floating-text',
+                        html: innerHtml,
+                    });
+                }
+            }
             // Абзаци
             else if (tag === 'p') {
                 const text = $(el).text().trim();
@@ -315,6 +327,8 @@ export class ArticlesService {
             blocks.find((b) => b.type === 'paragraph')?.html?.replace(/<[^>]+>/g, '') ||
             'Без назви';
 
+        await this.reactionService.deleteAllReaction(id)
+
         // Збереження в базу
         const article = await this.articleRepository.update(id, {
             title,
@@ -340,15 +354,37 @@ export class ArticlesService {
         const collectImageSrcs = (blocks: any[]): string[] => {
             if (!Array.isArray(blocks)) return []
             const acc = new Set<string>()
+
+            const addFromHtml = (html?: string | null) => {
+                if (!html || typeof html !== 'string') return
+                try {
+                    const $ = cheerio.load(html)
+                    $('img').each((_, img) => {
+                        const src = $(img).attr('src')
+                        if (src) acc.add(src)
+                    })
+                } catch {}
+            }
+
             for (const block of blocks) {
                 if (!block) continue
+                // Standalone image blocks
                 if (block.type === 'image' && typeof block.src === 'string') {
                     acc.add(block.src)
                 }
-                if (block.type === 'paragraph' && Array.isArray(block.images)) {
+                // Multiple images in one block
+                if (block.type === 'images' && Array.isArray(block.images)) {
                     for (const img of block.images) {
                         if (img && typeof img.src === 'string') acc.add(img.src)
                     }
+                }
+                // Paragraphs or floating text may contain inline <img>
+                if (block.type === 'paragraph' || block.type === 'floating-text') {
+                    addFromHtml(block.html)
+                }
+                // Lists contain items with HTML that may include <img>
+                if ((block.type === 'unordered-list' || block.type === 'ordered-list') && Array.isArray(block.items)) {
+                    for (const item of block.items) addFromHtml(item?.html)
                 }
             }
             return Array.from(acc)
@@ -360,15 +396,18 @@ export class ArticlesService {
             // Only delete local uploads
             if (!src.startsWith('/uploads/')) continue
             const relative = src.startsWith('/') ? src.slice(1) : src // remove leading '/'
-            const filePath = path.join(process.cwd(), relative)
+            // Resolve to apps/backend/uploads regardless of compiled subdir depth
+            const filePath = path.join(__dirname, '..', '..', relative)
             try {
                 if (fs.existsSync(filePath)) {
                     fs.unlinkSync(filePath)
                 }
-            } catch {
-                // Ignore deletion errors per file
+            } catch(err) {
+                console.error(err)
             }
         }
+
+        await this.reactionService.deleteAllReaction(id)
 
         await this.articleRepository.delete(id)
         return { message: 'deleted' }

@@ -75,7 +75,7 @@ export const ArticleRenderer = ({ blocks }) => {
                         )
                     case 'images':
                         return (
-                            <div key={index} className="my-6 grid grid-cols-2 gap-4 ">
+                            <div key={index} className="my-6 grid grid-cols-2 md:grid-cols-3 gap-4 ">
                                 {block.images.map((image, i) => (
                                     <img src={toAbsolute(image.src)} alt="" className="rounded-xl shadow" />
                                 ))}

@@ -1,11 +1,14 @@
+const API_ORIGIN = import.meta.env.VITE_API_URL ?? 'http://localhost:3000'
+
 export const fetchArticles = async () => {
-    const response = await fetch('http://localhost:3000/articles')
+    console.log(import.meta.env)
+    const response = await fetch(`${API_ORIGIN}/articles`)
     const data = await response.json()
     return data
 }
 
 export const createArticle = async (formData, accessToken) => {
-    const response = await fetch('http://localhost:3000/articles', {
+    const response = await fetch(`${API_ORIGIN}/articles`, {
         method: 'POST',
         body: formData,
         headers: {
@@ -17,7 +20,7 @@ export const createArticle = async (formData, accessToken) => {
 }
 
 export const deleteArticle = async (id, accessToken) => {
-    const response = await fetch(`http://localhost:3000/articles/${id}`, {
+    const response = await fetch(`${API_ORIGIN}/articles/${id}`, {
         method: 'DELETE',
         headers: {
             'Authorization': `Bearer ${accessToken}`
@@ -28,13 +31,13 @@ export const deleteArticle = async (id, accessToken) => {
 }
 
 export const fetchArticleById = async (id) => {
-    const response = await fetch(`http://localhost:3000/articles/${id}`)
+    const response = await fetch(`${API_ORIGIN}/articles/${id}`)
     const data = await response.json()
     return data
 }
 
 export const updateArticle = async (id, article, accessToken) => {
-    const response = await fetch(`http://localhost:3000/articles/${id}`, {
+    const response = await fetch(`${API_ORIGIN}/articles/${id}`, {
         method: 'PUT',
         body: JSON.stringify(article),
         headers: {
@@ -47,7 +50,7 @@ export const updateArticle = async (id, article, accessToken) => {
 }
 
 export const submitArticleRating = async (articleId, rating, fingerprint) => {
-    const response = await fetch('http://localhost:3000/reaction', {
+    const response = await fetch(`${API_ORIGIN}/reaction`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -62,7 +65,7 @@ export const submitArticleRating = async (articleId, rating, fingerprint) => {
 }
 
 export const fetchArticleAverageRating = async (articleId, accessToken) => {
-    const response = await fetch(`http://localhost:3000/reaction/average/${articleId}`, {
+    const response = await fetch(`${API_ORIGIN}/reaction/average/${articleId}`, {
         headers: {
             'Authorization': `Bearer ${accessToken}`
         }
@@ -75,7 +78,7 @@ export const fetchArticleAverageRating = async (articleId, accessToken) => {
 }
 
 export const fetchArticleRatingDistribution = async (articleId, accessToken) => {
-    const response = await fetch(`http://localhost:3000/reaction/distribution/${articleId}`, {
+    const response = await fetch(`${API_ORIGIN}/reaction/distribution/${articleId}`, {
         headers: {
             'Authorization': `Bearer ${accessToken}`
         }

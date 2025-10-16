@@ -53,9 +53,9 @@ export const ArticlesPage = () => {
         })
     }
     return (
-        <div className="flex flex-col gap-4 w-full items-center justify-start py-10 px-6">
+        <div className="flex flex-col gap-6 w-full items-center justify-start py-8 px-4 sm:py-10 sm:px-6">
             {(!articles || articles.length === 0) ? (
-                <div className="w-full max-w-3xl text-center bg-white rounded-2xl shadow-xl p-12 border border-[#E9ECF2]">
+                <div className="w-full max-w-3xl text-center bg-white rounded-2xl shadow-xl p-8 sm:p-12 border border-[#E9ECF2]">
                     <div className="w-16 h-16 rounded-2xl bg-[#F5F8FF] ring-1 ring-[#E9ECF2] mx-auto flex items-center justify-center text-3xl mb-4">📄</div>
                     <h2 className="text-3xl font-bold text-[#0A1E63]">Поки що немає статей</h2>
                     <p className="mt-2 text-[#6C7A89]">Будьте першим, хто створить корисну статтю для спільноти.</p>
@@ -77,17 +77,19 @@ export const ArticlesPage = () => {
                     </div>
                 </div>
             ) : (
-                articles.map(article => (
-                    <Article
-                        key={article.id}
-                        id={article.id}
-                        title={article.title}
-                        description={getExcerptFromBlocks(article.content)}
-                        author={article.user?.name || ""}
-                        handleDelete={handleDelete}
-                        handleEditArticle={handleEditArticle}
-                    />
-                ))
+                <div className="w-full max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
+                    {articles.map(article => (
+                        <Article
+                            key={article.id}
+                            id={article.id}
+                            title={article.title}
+                            description={getExcerptFromBlocks(article.content)}
+                            author={article.user?.name || ""}
+                            handleDelete={handleDelete}
+                            handleEditArticle={handleEditArticle}
+                        />
+                    ))}
+                </div>
             )}
         </div>
     )

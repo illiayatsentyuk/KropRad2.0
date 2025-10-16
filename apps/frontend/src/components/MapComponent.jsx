@@ -4,7 +4,7 @@ export default function MapComponent() {
   const location = useLocation();
   const path = location.pathname;
   return (
-    <div className={`${path === "/map" ? "w-full h-full flex-1 relative" : "flex items-center justify-center"}`}>
+    <div className={`${path === "/map" ? "w-full h-full flex-1 relative" : "flex items-center justify-center w-full"}`}>
       {path === "/map" ? (
         <iframe
           src="https://www.google.com/maps/d/embed?mid=1CQa6O7yCsjB6X-ro6woJ3CsPLLJ_b6Q&ehbc=2E312F"
@@ -16,7 +16,7 @@ export default function MapComponent() {
       ) : (
         <iframe
           src="https://www.google.com/maps/d/embed?mid=1CQa6O7yCsjB6X-ro6woJ3CsPLLJ_b6Q&ehbc=2E312F"
-          className="w-[600px] h-[450px] border-0"
+          className="w-full max-w-[680px] h-[300px] sm:h-[380px] md:h-[420px] lg:h-[450px] border-0"
           frameBorder="0"
           allowFullScreen
           aria-hidden="false"

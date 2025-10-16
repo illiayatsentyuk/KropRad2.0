@@ -69,8 +69,8 @@ export const AuthForm = () => {
   }
 
   return (
-    <div className="w-full max-w-md mx-auto p-10 bg-white rounded-xl shadow-lg">
-      <h2 className="text-3xl font-bold text-[#0A1E63] mb-2 text-center">
+    <div className="w-full mx-auto p-6 sm:p-8 md:p-10 bg-white rounded-xl shadow-lg">
+      <h2 className="text-2xl sm:text-3xl font-bold text-[#0A1E63] mb-2 text-center">
         {isLogin ? 'Welcome Back' : 'Create Account'}
       </h2>
       <p className="text-sm text-[#6C7A89] mb-6 text-center">
@@ -99,6 +99,7 @@ export const AuthForm = () => {
               type="email"
               placeholder="you@example.com"
               name="email"
+              autoComplete="email"
               value={values.email}
               onChange={onChange}
               onBlur={onBlur}
@@ -118,6 +119,7 @@ export const AuthForm = () => {
               type="password"
               placeholder="••••••••"
               name="password"
+              autoComplete="current-password"
               value={values.password}
               onChange={onChange}
               onBlur={onBlur}
@@ -147,6 +149,7 @@ export const AuthForm = () => {
               type="text"
               placeholder="Your name"
               name="name"
+              autoComplete="name"
               value={values.name}
               onChange={onChange}
               onBlur={onBlur}
@@ -166,6 +169,7 @@ export const AuthForm = () => {
               type="email"
               placeholder="you@example.com"
               name="email"
+              autoComplete="email"
               value={values.email}
               onChange={onChange}
               onBlur={onBlur}
@@ -185,6 +189,7 @@ export const AuthForm = () => {
               type="password"
               placeholder="At least 8 characters"
               name="password"
+              autoComplete="new-password"
               value={values.password}
               onChange={onChange}
               onBlur={onBlur}

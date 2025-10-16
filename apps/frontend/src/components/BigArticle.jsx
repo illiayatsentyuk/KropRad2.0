@@ -76,23 +76,23 @@ export const BigArticle = ({ article }) => {
     }
 
     return (
-        <article className="max-w-4xl mx-auto px-6 py-12">
+        <article className="max-w-4xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
             {/* Article Header */}
-            <header className="mb-8 pb-8 border-b-2 border-[#E9ECF2]">
-                <h1 className="text-5xl font-bold text-[#0A1E63] mb-6 leading-tight">
+            <header className="mb-6 sm:mb-8 pb-6 sm:pb-8 border-b-2 border-[#E9ECF2]">
+                <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-[#0A1E63] mb-4 sm:mb-6 leading-tight">
                     {article.title}
                 </h1>
                 
                 {/* Author Info */}
-                <div className="flex items-center gap-4">
-                    <div className="w-14 h-14 rounded-full bg-gradient-to-br from-[#2B59C3] to-[#3F7EF7] flex items-center justify-center text-white text-xl font-bold shadow-md">
+                <div className="flex items-center gap-3 sm:gap-4">
+                    <div className="w-10 h-10 sm:w-14 sm:h-14 rounded-full bg-gradient-to-br from-[#2B59C3] to-[#3F7EF7] flex items-center justify-center text-white text-lg sm:text-xl font-bold shadow-md">
                         {article.user.name.charAt(0).toUpperCase()}
                     </div>
                     <div>
-                        <p className="text-[#0A1E63] font-semibold text-lg">
+                        <p className="text-[#0A1E63] font-semibold text-base sm:text-lg">
                             {article.user.name}
                         </p>
-                        <p className="text-[#6C7A89] text-sm">
+                        <p className="text-[#6C7A89] text-xs sm:text-sm">
                             {article.user.email}
                         </p>
                     </div>
@@ -103,7 +103,7 @@ export const BigArticle = ({ article }) => {
             <ArticleRenderer blocks={article.content} />
 
             {/* Rating Section */}
-            <div className="mt-10 p-6 rounded-xl border border-[#E9ECF2] bg-[#F9FBFF]">
+            <div className="mt-8 sm:mt-10 p-4 sm:p-6 rounded-xl border border-[#E9ECF2] bg-[#F9FBFF]">
                 <p className="text-[#0A1E63] font-semibold mb-3">Наскільки ця стаття була корисна?</p>
                 <div className="flex items-center gap-1">
                     {[1,2,3,4,5].map((s) => (
@@ -114,7 +114,7 @@ export const BigArticle = ({ article }) => {
                             onMouseLeave={() => setHovered(0)}
                             onClick={() => handleRate(s)}
                             aria-label={`Rate ${s} star${s>1? 's': ''}`}
-                            className={`text-3xl ${submitted ? 'cursor-default' : 'hover:scale-110'} transition-transform`}
+                            className={`text-2xl sm:text-3xl ${submitted ? 'cursor-default' : 'hover:scale-110'} transition-transform`}
                             style={{
                                 color: (hovered >= s || selectedRating >= s) ? '#F5C518' : '#E0E6F0',
                                 textShadow: (hovered >= s || selectedRating >= s) ? '0 1px 2px rgba(0,0,0,0.2)' : 'none'
@@ -125,13 +125,13 @@ export const BigArticle = ({ article }) => {
                     ))}
                 </div>
                 {submitted && (
-                    <p className="text-green-700 mt-2">Дякуємо за вашу оцінку!</p>
+                    <p className="text-green-700 mt-2 text-sm sm:text-base">Дякуємо за вашу оцінку!</p>
                 )}
                 {!!error && (
-                    <p className="text-red-600 mt-2">{error}</p>
+                    <p className="text-red-600 mt-2 text-sm sm:text-base">{error}</p>
                 )}
                 {isAdmin && (
-                    <div className="mt-4 text-sm text-[#0A1E63]">
+                    <div className="mt-4 text-xs sm:text-sm text-[#0A1E63]">
                         {average ? (
                             <span>Середня оцінка: <strong>{average.average}</strong> (з {average.count})</span>
                         ) : avgError ? (
@@ -144,8 +144,8 @@ export const BigArticle = ({ article }) => {
                                     const count = distribution.distribution?.[s] || 0
                                     const pct = total > 0 ? (count / total) * 100 : 0
                                     return (
-                                        <div key={s} className="flex items-center gap-3">
-                                            <div className="w-20 text-right text-[#6C7A89]">
+                                        <div key={s} className="flex items-center gap-2 sm:gap-3">
+                                            <div className="w-16 sm:w-20 text-right text-[#6C7A89] text-xs sm:text-sm">
                                                 {Array.from({ length: s }).map((_, i) => (
                                                     <span key={i} className="text-[#C0C9D6]">★</span>
                                                 ))}

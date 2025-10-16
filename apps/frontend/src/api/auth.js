@@ -1,3 +1,5 @@
+const API_ORIGIN = import.meta.env.VITE_API_URL ?? 'http://localhost:3000'
+
 const parseError = async (response) => {
     let message = `Request failed with status ${response.status}`
     let details = null
@@ -18,7 +20,7 @@ const parseError = async (response) => {
 }
 
 export const fetchSignin = async (email, password) => {
-    const response = await fetch('http://localhost:3000/auth/local/signin', {
+    const response = await fetch(`${API_ORIGIN}/auth/local/signin`, {
         method: 'POST',
         body: JSON.stringify({ email, password }),
         headers: {
@@ -33,7 +35,7 @@ export const fetchSignin = async (email, password) => {
 }
 
 export const fetchSignup = async (name, email, password) => {
-    const response = await fetch('http://localhost:3000/auth/local/signup', {
+    const response = await fetch(`${API_ORIGIN}/auth/local/signup`, {
         method: 'POST',
         body: JSON.stringify({ name, email, password }),
         headers: {
@@ -48,7 +50,7 @@ export const fetchSignup = async (name, email, password) => {
 }
 
 export const fetchMe = async (accessToken) => {
-    const response = await fetch('http://localhost:3000/auth/me', {
+    const response = await fetch(`${API_ORIGIN}/auth/me`, {
         headers: {
             'Authorization': `Bearer ${accessToken}`
         }
@@ -58,7 +60,7 @@ export const fetchMe = async (accessToken) => {
 }
 
 export const fetchLogout = async (accessToken) => {
-    const response = await fetch('http://localhost:3000/auth/logout', {
+    const response = await fetch(`${API_ORIGIN}/auth/logout`, {
         method: 'POST',
         headers: {
             'Authorization': `Bearer ${accessToken}`,

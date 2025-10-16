@@ -7,7 +7,7 @@ export const HeroPage = () => {
     <div className="flex w-full items-center justify-center py-10 px-6">
       <div className="flex flex-col items-center justify-center">
         <div className="flex flex-col items-center justify-center mt-[50px] w-full h-full">
-          <h1 className="text-[36px] font-semibold w-[690px] text-center mb-[50px]">
+          <h1 className="text-2xl md:text-[36px] font-semibold w-full max-w-[690px] text-center mb-[30px] md:mb-[50px] px-2">
             Перевір рівень радіації свого району в місті Кропивницький
           </h1>
           <Map />

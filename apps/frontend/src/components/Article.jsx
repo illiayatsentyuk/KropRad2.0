@@ -7,15 +7,15 @@ export const Article = ({ title, description, author, id, handleDelete, handleEd
     const isAdmin = user?.role === 'admin'
 
     return (
-        <div className="flex justify-center flex-col gap-3 bg-white p-6 rounded-xl shadow-md border-2 border-[#E9ECF2] transition-all duration-300 hover:shadow-lg hover:border-[#3F7EF7] hover:-translate-y-1 w-1/3">
+        <div className="flex justify-center flex-col gap-3 bg-white p-5 sm:p-6 rounded-2xl shadow-md border border-[#E9ECF2] transition-all duration-300 hover:shadow-lg hover:border-[#3F7EF7] hover:-translate-y-0.5">
 
-            <h2 className="text-2xl font-bold text-[#0A1E63] leading-tight">
+            <h2 className="text-xl sm:text-2xl font-bold text-[#0A1E63] leading-tight line-clamp-3">
                 <Link to={`/article/${id}`}>
                     {title}
                 </Link>
             </h2>
             {description ? (
-                <p className="text-[15px] text-[#1E1E1E] leading-relaxed">
+                <p className="text-sm sm:text-[15px] text-[#1E1E1E] leading-relaxed line-clamp-3">
                     {description}
                 </p>
             ) : null}

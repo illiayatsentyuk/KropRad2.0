@@ -17,18 +17,9 @@ const links = [
         label: "Створити статтю"
     },
     {
-        to: "/",
-        label: "Ipsum"
+        to: "/about",
+        label: "Про проект"
     },
-    {
-        to: "/",
-        label: "Dolor"
-    },
-    {
-        to: "/",
-        label: "Sit"
-    },
-
 ]
 
 export const AdminLayout = () => {

@@ -11,16 +11,8 @@ const links = [
         label: "Статті"
     },
     {
-        to: "/",
-        label: "Ipsum"
-    },
-    {
-        to: "/",
-        label: "Dolor"
-    },
-    {
-        to: "/",
-        label: "Sit"
+        to: "/about",
+        label: "Про проект"
     },
 ]
 

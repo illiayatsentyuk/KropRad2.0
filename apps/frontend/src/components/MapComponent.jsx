@@ -1,29 +1,26 @@
-import "./MapComponent.css";
 import { useLocation } from "react-router-dom";
 
 export default function MapComponent() {
   const location = useLocation();
   const path = location.pathname;
   return (
-    <div className={`${path === "/map" ? "map" : "map-component"}`}>
+    <div className={`${path === "/map" ? "w-full h-full flex-1 relative" : "flex items-center justify-center"}`}>
       {path === "/map" ? (
         <iframe
           src="https://www.google.com/maps/d/embed?mid=1CQa6O7yCsjB6X-ro6woJ3CsPLLJ_b6Q&ehbc=2E312F"
-          style={{ width: "100%", height: "100%", border: "none" }}
+          className="w-full h-full border-0"
           allowFullScreen
           aria-hidden="false"
-          tabIndex="0"
+          tabIndex={0}
         />
       ) : (
         <iframe
           src="https://www.google.com/maps/d/embed?mid=1CQa6O7yCsjB6X-ro6woJ3CsPLLJ_b6Q&ehbc=2E312F"
-          width="600"
-          height="450"
-          frameborder="0"
-          style={{ border: 0 }}
-          allowfullscreen=""
+          className="w-[600px] h-[450px] border-0"
+          frameBorder="0"
+          allowFullScreen
           aria-hidden="false"
-          tabindex="0"
+          tabIndex={0}
         ></iframe>
       )}
     </div>

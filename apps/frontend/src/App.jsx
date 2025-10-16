@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { AuthPage } from './pages/AuthPage'
 import { MainLayout } from './layouts/MainLayout'
-import { HeroPage } from './pages/HeroPage/HeroPage'
+import { HeroPage } from './pages/HeroPage'
 import { ArticlesPage } from './pages/Articles'
 import { NotFoundPage } from './pages/404'
 import { fetchMe } from './api/auth'
@@ -11,6 +11,8 @@ import { CreateArticle } from './pages/CreateArticle'
 import { setUser, clearUser } from './store/store'
 import { useDispatch } from 'react-redux'
 import { ArticlePage } from './pages/Article'
+import { AboutPage } from './pages/About'
+import MapComponent from './components/MapComponent'
 
 function App() {
   const dispatch = useDispatch()
@@ -41,6 +43,8 @@ function App() {
           <Route path="/" element={<HeroPage />} />
           <Route path="/articles" element={<ArticlesPage />} />
           <Route path="/article/:id" element={<ArticlePage />} />
+          <Route path="/about" element={<AboutPage />} />
+          <Route path="/map" element={<MapComponent />} />
         </Route>
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
@@ -58,6 +62,8 @@ function App() {
             <Route path="/create-article" element={<CreateArticle />} />
             <Route path="/edit-article/:id" element={<CreateArticle />} />
             <Route path="/article/:id" element={<ArticlePage />} />
+            <Route path="/about" element={<AboutPage />} />
+            <Route path="/map" element={<MapComponent />} />
           </Route>
           <Route path="*" element={<NotFoundPage />} />
         </Routes>

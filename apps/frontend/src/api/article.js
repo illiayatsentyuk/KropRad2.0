@@ -1,91 +1,87 @@
+import axios from "axios"
+
 const API_ORIGIN = import.meta.env.VITE_API_URL ?? 'http://localhost:3000'
 
 export const fetchArticles = async () => {
     console.log(import.meta.env)
-    const response = await fetch(`${API_ORIGIN}/articles`)
-    const data = await response.json()
-    return data
+    const response = await axios.get(`${API_ORIGIN}/articles`)
+    return response.data
 }
 
 export const createArticle = async (formData, accessToken) => {
-    const response = await fetch(`${API_ORIGIN}/articles`, {
-        method: 'POST',
-        body: formData,
+    const response = await axios.post(`${API_ORIGIN}/articles`, formData, {
         headers: {
             'Authorization': `Bearer ${accessToken}`
         }
     })
-    const data = await response.json()
-    return data
+    return response.data
 }
 
 export const deleteArticle = async (id, accessToken) => {
-    const response = await fetch(`${API_ORIGIN}/articles/${id}`, {
-        method: 'DELETE',
+    const response = await axios.delete(`${API_ORIGIN}/articles/${id}`, {
         headers: {
             'Authorization': `Bearer ${accessToken}`
         }
     })
-    const data = await response.json()
-    return data
+    return response.data
 }
 
 export const fetchArticleById = async (id) => {
-    const response = await fetch(`${API_ORIGIN}/articles/${id}`)
-    const data = await response.json()
-    return data
+    const response = await axios.get(`${API_ORIGIN}/articles/${id}`)
+    return response.data
 }
 
 export const updateArticle = async (id, article, accessToken) => {
-    const response = await fetch(`${API_ORIGIN}/articles/${id}`, {
-        method: 'PUT',
-        body: JSON.stringify(article),
+    const response = await axios.put(`${API_ORIGIN}/articles/${id}`, article, {
         headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${accessToken}`
         }
     })
-    const data = await response.json()
-    return data
+    return response.data
 }
 
 export const submitArticleRating = async (articleId, rating, fingerprint) => {
-    const response = await fetch(`${API_ORIGIN}/reaction`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ articleId, rating, fingerprint })
-    })
-    if (!response.ok) {
-        const err = await response.json().catch(() => ({}))
-        throw new Error(err?.message || 'Failed to submit rating')
+    try {
+        const response = await axios.post(`${API_ORIGIN}/reaction`, 
+            { articleId, rating, fingerprint },
+            {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }
+        )
+        return response.data
+    } catch (error) {
+        const message = error.response?.data?.message || 'Failed to submit rating'
+        throw new Error(message)
     }
-    return response.json()
 }
 
 export const fetchArticleAverageRating = async (articleId, accessToken) => {
-    const response = await fetch(`${API_ORIGIN}/reaction/average/${articleId}`, {
-        headers: {
-            'Authorization': `Bearer ${accessToken}`
-        }
-    })
-    if (!response.ok) {
-        const err = await response.json().catch(() => ({}))
-        throw new Error(err?.message || 'Failed to fetch average rating')
+    try {
+        const response = await axios.get(`${API_ORIGIN}/reaction/average/${articleId}`, {
+            headers: {
+                'Authorization': `Bearer ${accessToken}`
+            }
+        })
+        return response.data
+    } catch (error) {
+        const message = error.response?.data?.message || 'Failed to fetch average rating'
+        throw new Error(message)
     }
-    return response.json()
 }
 
 export const fetchArticleRatingDistribution = async (articleId, accessToken) => {
-    const response = await fetch(`${API_ORIGIN}/reaction/distribution/${articleId}`, {
-        headers: {
-            'Authorization': `Bearer ${accessToken}`
-        }
-    })
-    if (!response.ok) {
-        const err = await response.json().catch(() => ({}))
-        throw new Error(err?.message || 'Failed to fetch rating distribution')
+    try {
+        const response = await axios.get(`${API_ORIGIN}/reaction/distribution/${articleId}`, {
+            headers: {
+                'Authorization': `Bearer ${accessToken}`
+            }
+        })
+        return response.data
+    } catch (error) {
+        const message = error.response?.data?.message || 'Failed to fetch rating distribution'
+        throw new Error(message)
     }
-    return response.json()
 }

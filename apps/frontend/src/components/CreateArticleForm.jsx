@@ -7,7 +7,6 @@ import { addArticle, updateArticle as updateArticleAction } from "../store/store
 export const CreateArticleForm = ({ article, isEdit }) => {
     const formRef = useRef(null)
     const navigate = useNavigate()
-    const accessToken = localStorage.getItem("access_token")
     const dispatch = useDispatch()
     const [fileName, setFileName] = useState("")
 
@@ -18,12 +17,12 @@ export const CreateArticleForm = ({ article, isEdit }) => {
 
         if (isEdit) {
             const values = Object.fromEntries(formData.entries())
-            updateArticle(article.id, values, accessToken).then(data => {
+            updateArticle(article.id, values).then(data => {
                 dispatch(updateArticleAction(data))
                 navigate("/articles")
             })
         } else {
-            createArticle(formData, accessToken).then(data => {
+            createArticle(formData).then(data => {
                 console.log(data)
                 const created = data?.article || data
                 if (created) {

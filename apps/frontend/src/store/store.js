@@ -14,6 +14,28 @@ const userSlice = createSlice({
       }
   }
 })
+
+const authSlice = createSlice({
+  name: 'auth',
+  initialState: { 
+    accessToken: localStorage.getItem('accessToken') || null, 
+    refreshToken: localStorage.getItem('refreshToken') || null 
+  },
+  reducers: {
+    setTokens: (state, action) => {
+      state.accessToken = action.payload.accessToken;
+      state.refreshToken = action.payload.refreshToken;
+      localStorage.setItem('accessToken', action.payload.accessToken);
+      localStorage.setItem('refreshToken', action.payload.refreshToken);
+    },
+    clearTokens: (state) => {
+      state.accessToken = null;
+      state.refreshToken = null;
+      localStorage.removeItem('accessToken');
+      localStorage.removeItem('refreshToken');
+    }
+  }
+})
 const articlesSlice = createSlice({
   name: 'articles',
   initialState: { articles: [] },
@@ -34,5 +56,18 @@ const articlesSlice = createSlice({
 });
 
 export const { setUser, clearUser } = userSlice.actions;
+export const { setTokens, clearTokens } = authSlice.actions;
 export const { setArticles, addArticle, updateArticle, deleteArticle } = articlesSlice.actions;
-export const store = configureStore({ reducer: { user: userSlice.reducer, articles: articlesSlice.reducer }});
+export const store = configureStore({ 
+  reducer: { 
+    user: userSlice.reducer, 
+    auth: authSlice.reducer,
+    articles: articlesSlice.reducer 
+  }
+});
+
+// Listen for token-expired event to clear user and tokens
+window.addEventListener('token-expired', () => {
+  store.dispatch(clearUser());
+  store.dispatch(clearTokens());
+});

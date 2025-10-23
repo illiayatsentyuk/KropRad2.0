@@ -20,10 +20,10 @@ function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
 
   useEffect(() => {
-    const refreshToken = localStorage.getItem("refresh_token")
-    const accessToken = localStorage.getItem("access_token")
+    const refreshToken = localStorage.getItem("refreshToken")
+    const accessToken = localStorage.getItem("accessToken")
     if (refreshToken && accessToken) {
-      fetchMe(accessToken).then(data => {
+      fetchMe().then(data => {
         if (data.role === "admin") {
           dispatch(setUser(data.user))
           setIsAdmin(true)
@@ -31,6 +31,9 @@ function App() {
         } else {
           dispatch(clearUser())
         }
+      }).catch(error => {
+        console.log("Failed to fetch user:", error)
+        dispatch(clearUser())
       })
     }
   }, [])

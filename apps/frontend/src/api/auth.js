@@ -1,4 +1,5 @@
 import axios from "axios"
+import axiosInstance from "./axiosInstance"
 const API_ORIGIN = import.meta.env.VITE_API_URL ?? 'http://localhost:3000'
 
 const parseError = (error) => {
@@ -57,20 +58,15 @@ export const fetchSignup = async (name, email, password) => {
     }
 }
 
-export const fetchMe = async (accessToken) => {
-    const response = await axios.get(`${API_ORIGIN}/auth/me`, {
-        headers: {
-            'Authorization': `Bearer ${accessToken}`
-        }
-    })
+export const fetchMe = async () => {
+    const response = await axiosInstance.get('/auth/me')
     return response.data
 }
 
-export const fetchLogout = async (accessToken) => {
+export const fetchLogout = async () => {
     try {
-        const response = await axios.post(`${API_ORIGIN}/auth/logout`, {}, {
+        const response = await axiosInstance.post('/auth/logout', {}, {
             headers: {
-                'Authorization': `Bearer ${accessToken}`,
                 'Content-Type': 'application/json'
             }
         })
@@ -80,5 +76,20 @@ export const fetchLogout = async (accessToken) => {
         return { message: "Failed to logout" }
     } catch (error) {
         return { message: "Failed to logout" }
+    }
+}
+
+export const fetchRefreshToken = async (refreshToken) => {
+    try {
+        const response = await axios.post(`${API_ORIGIN}/auth/refresh`, {}, {
+            headers: {
+                'Authorization': `Bearer ${refreshToken}`,
+                'Content-Type': 'application/json'
+            }
+        })
+        return response.data
+    } catch (error) {
+        const err = parseError(error)
+        throw new Error(err.message)
     }
 }

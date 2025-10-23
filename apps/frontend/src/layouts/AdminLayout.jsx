@@ -2,6 +2,8 @@ import { Outlet, Link, useLocation } from 'react-router-dom'
 import { useState } from 'react'
 import logo from '/vite.svg'
 import { fetchLogout } from '../api/auth'
+import { useDispatch } from 'react-redux'
+import { clearUser, clearTokens } from '../store/store'
 
 const links = [
     {
@@ -26,15 +28,17 @@ export const AdminLayout = () => {
     const { pathname } = useLocation()
     const isActive = (to) => pathname === to
     const [sidebarOpen, setSidebarOpen] = useState(false)
+    const dispatch = useDispatch()
+    
     const handleLogout = () => {
-        const accessToken = localStorage.getItem("access_token")
+        const accessToken = localStorage.getItem("accessToken")
         if(!accessToken) {
             return window.location.reload()
         }
-        fetchLogout(accessToken).then(data => {
+        fetchLogout().then(data => {
             if(data.message === "Logged out") {
-                localStorage.removeItem("access_token")
-                localStorage.removeItem("refresh_token")
+                dispatch(clearUser())
+                dispatch(clearTokens())
                 window.location.reload()
             }
         }).catch(error => {

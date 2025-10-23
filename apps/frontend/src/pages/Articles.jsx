@@ -26,7 +26,6 @@ export const ArticlesPage = () => {
     const articles = useSelector((state) => state.articles.articles)
     const user = useSelector((state) => state.user.user)
     const isAdmin = user?.role === 'admin'
-    const accessToken = localStorage.getItem("access_token")
     const navigate = useNavigate()
     useEffect(() => {
         fetchArticles().then(data => {
@@ -42,7 +41,7 @@ export const ArticlesPage = () => {
     }
 
     const handleDelete = (id) => {
-        deleteArticle(id, accessToken).then(data => {
+        deleteArticle(id).then(data => {
             if (data.message === 'deleted') {
                 dispatch(deleteArticleAction(id))
             } else {

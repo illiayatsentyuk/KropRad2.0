@@ -46,12 +46,12 @@ export const BigArticle = ({ article }) => {
 
     useEffect(() => {
         if (!article || !isAdmin) return
-        const accessToken = localStorage.getItem("access_token")
+        const accessToken = localStorage.getItem("accessToken")
         if (!accessToken) return
-        fetchArticleAverageRating(article.id, accessToken)
+        fetchArticleAverageRating(article.id)
             .then(setAverage)
             .catch(e => setAvgError(e.message || "Не вдалося завантажити середню оцінку"))
-        fetchArticleRatingDistribution(article.id, accessToken)
+        fetchArticleRatingDistribution(article.id)
             .then(setDistribution)
             .catch(e => setDistError(e.message || "Не вдалося завантажити розподіл оцінок"))
     }, [article, isAdmin])

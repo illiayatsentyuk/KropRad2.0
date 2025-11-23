@@ -3,7 +3,7 @@ import {
     UseInterceptors,
 } from '@nestjs/common';
 import { ArticlesService } from './articles.service';
-import { diskStorage } from 'multer';
+import { memoryStorage } from 'multer';
 import { extname } from 'path';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { BadRequestException } from '@nestjs/common';
@@ -40,13 +40,7 @@ export class ArticlesController {
     @Post("/")
     @UseInterceptors(
         FileInterceptor('file', {
-            storage: diskStorage({
-                destination: './uploads',
-                filename: (_, file, cb) => {
-                    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
-                    cb(null, uniqueSuffix + extname(file.originalname));
-                },
-            }),
+            storage: memoryStorage(),
             limits: { fileSize: 10 * 1024 * 1024 }, // 10MB
             fileFilter: (_, file, cb) => {
                 const allowedMime = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
@@ -60,7 +54,7 @@ export class ArticlesController {
     )
     async createArticle(@UploadedFile() file: Express.Multer.File, @GetCurrentUserId() userId: number) {
         console.log(file)
-        return this.articlesService.createArticle(file.path, userId);
+        return this.articlesService.createArticle(file.buffer, userId);
     }
 
     @Roles(Role.ADMIN)
@@ -68,13 +62,7 @@ export class ArticlesController {
     @Put("/:id")
     @UseInterceptors(
         FileInterceptor('file', {
-            storage: diskStorage({
-                destination: './uploads',
-                filename: (_, file, cb) => {
-                    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
-                    cb(null, uniqueSuffix + extname(file.originalname));
-                },
-            }),
+            storage: memoryStorage(),
             limits: { fileSize: 10 * 1024 * 1024 },
             fileFilter: (_, file, cb) => {
                 const allowedMime = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
@@ -87,7 +75,7 @@ export class ArticlesController {
         }),
     )
     updateArticle(@Param("id") id: number, @UploadedFile() file: Express.Multer.File) {
-        return this.articlesService.updateArticle(id, file.path)
+        return this.articlesService.updateArticle(id, file.buffer)
     }
 
     @Roles(Role.ADMIN)

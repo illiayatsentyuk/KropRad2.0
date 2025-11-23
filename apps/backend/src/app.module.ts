@@ -11,29 +11,28 @@ import { Article } from './articles/entity/article.entity';
 import { ArticlesModule } from './articles/articles.module';
 import { ReactionModule } from './reaction/reaction.module';
 import { Reaction } from './reaction/entity/reaction.entity';
-import { ServeStaticModule } from '@nestjs/serve-static';
-import { join } from 'path';
+import { Image } from './images/entity/image.entity';
+import { ImagesModule } from './images/images.module';
+import { ConfigModule } from '@nestjs/config';
+
 
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      envFilePath: ['.env', '.env.development', '.env.production'],
+      isGlobal: true,
+    }),
     TypeOrmModule.forRoot({
-      database: 'kroprad',
       type: 'postgres',
-      host: 'localhost',
-      port: 5432,
-      username: 'postgres',
-      password: 'I562530y2009',
-      entities: [User, Article, Reaction],
+      url: process.env.DATABASE_URL,
+      autoLoadEntities: true,
       synchronize: true,
     }),
     AuthModule,
     UsersModule,
     ArticlesModule,
     ReactionModule,
-    ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', 'uploads'), // Path to your static files (e.g., 'public' folder)
-      serveRoot: '/uploads'
-    }),
+    ImagesModule,
   ],
   controllers: [AppController],
   providers: [

@@ -1,1 +1,5 @@
 @import "tailwindcss";
+
+strong {
+    color: #1E1E1E !important;
+}

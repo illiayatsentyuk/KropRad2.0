@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import { AuthPage } from './Pages/AuthPage'
+import { AuthPage } from './pages/AuthPage'
 import { MainLayout } from './layouts/MainLayout'
 import { HeroPage } from './pages/HeroPage'
 import { ArticlesPage } from './pages/Articles'

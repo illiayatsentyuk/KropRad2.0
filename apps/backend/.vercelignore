@@ -1,0 +1,14 @@
+node_modules
+src
+test
+uploads
+*.spec.ts
+*.md
+.env
+.env.*
+!.env.production
+tsconfig.json
+tsconfig.build.json
+nest-cli.json
+eslint.config.mjs
+

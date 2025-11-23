@@ -1,4 +1,4 @@
-const API_ORIGIN = import.meta.env.VITE_API_URL ?? 'http://localhost:3000'
+const API_ORIGIN = import.meta.env.VITE_API_URL ?? 'https://krop-rad2-0-backend.vercel.app/'
 const toAbsolute = (src) => {
     if (!src) return ''
     // If it's a data URI (base64), return as-is
@@ -31,7 +31,6 @@ export const ArticleRenderer = ({ blocks }) => {
     return (
         <div className="prose prose-lg max-w-none flex flex-col gap-4">
             {blocks.map((block, index) => {
-                console.log(block)
                 if (!block || !block.type) return null
                 switch (block.type) {
                     case 'heading':

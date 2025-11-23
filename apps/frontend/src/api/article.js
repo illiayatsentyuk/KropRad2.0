@@ -1,4 +1,4 @@
-const API_ORIGIN = import.meta.env.VITE_API_URL ?? 'https://krop-rad2-0-backend.vercel.app/'
+const API_ORIGIN = import.meta.env.VITE_API_URL ?? 'https://krop-rad2-0-backend.vercel.app'
 
 export const fetchArticles = async () => {
     console.log(import.meta.env)

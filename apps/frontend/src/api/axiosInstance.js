@@ -1,6 +1,7 @@
 import axios from 'axios';
 
-const API_ORIGIN = import.meta.env.VITE_API_URL ?? 'http://localhost:3000';
+// Remove trailing slash from API_ORIGIN if present
+const API_ORIGIN = (import.meta.env.VITE_API_URL ?? 'http://localhost:3000').replace(/\/$/, '');
 
 // Create axios instance
 const axiosInstance = axios.create({

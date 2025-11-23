@@ -8,11 +8,6 @@ async function bootstrap() {
   app.enableCors({
     origin: "*",
     credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'Accept', 'X-Requested-With'],
-    exposedHeaders: ['Authorization'],
-    preflightContinue: false,
-    optionsSuccessStatus: 204
   });
 
   app.useGlobalPipes(new ValidationPipe({
@@ -21,7 +16,6 @@ async function bootstrap() {
     transform: true,
     transformOptions: { enableImplicitConversion: true },
   }));
-  
   await app.listen(process.env.PORT ?? 3000);
 }
 bootstrap();

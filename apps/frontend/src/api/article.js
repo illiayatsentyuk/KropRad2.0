@@ -1,8 +1,7 @@
 import axios from "axios"
 import axiosInstance from "./axiosInstance"
 
-// Remove trailing slash from API_ORIGIN if present
-const API_ORIGIN = (import.meta.env.VITE_API_URL ?? 'http://localhost:3000').replace(/\/$/, '')
+const API_ORIGIN = import.meta.env.VITE_API_URL ?? 'http://localhost:3000'
 
 export const fetchArticles = async () => {
     console.log(import.meta.env)

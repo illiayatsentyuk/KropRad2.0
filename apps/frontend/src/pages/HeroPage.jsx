@@ -1,5 +1,6 @@
  
 import Map from '../components/MapComponent'
+import { Link } from 'react-router-dom'
 
 export const HeroPage = () => {
 
@@ -20,6 +21,14 @@ export const HeroPage = () => {
               безпечним містом. Цей проєкт — наш спільний крок до прозорості,
               безпеки та відповідальності.
             </p>
+          </div>
+          <div className="mt-6">
+            <Link 
+              to="/articles" 
+              className="px-8 py-3 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 transition-colors duration-300 inline-block"
+            >
+              Переглянути статті
+            </Link>
           </div>
         </div>
       </div>

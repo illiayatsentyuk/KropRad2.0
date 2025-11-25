@@ -43,7 +43,7 @@ export const MainLayout = () => {
                     <div className="w-10" />
                 </header>
                 <div className={`${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 overflow-y-auto flex flex-col items-center p-5 gap-4 bg-gradient-to-b from-[#0b1b4d] to-[#0e275f] text-[#EAEAEA] w-56 h-screen fixed left-0 top-0 border-r border-white/10 transform transition-transform duration-200 z-[950] md:top-0 md:h-screen md:pt-5 pt-16` }>
-                    <div className="w-full flex items-center justify-between">
+                    <div className="w-full flex items-center justify-center">
                         <Link to="/" className="transition-transform duration-200 hover:scale-105">
                             <img src={logo} alt="logo" className="w-12 h-12" />
                         </Link>

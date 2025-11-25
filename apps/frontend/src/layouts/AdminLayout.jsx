@@ -72,7 +72,7 @@ export const AdminLayout = () => {
                     </div>
                 </header>
                 <div className={`${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 overflow-y-auto flex flex-col items-center p-5 gap-4 bg-gradient-to-b from-[#0b1b4d] to-[#0e275f] border-r border-white/10 w-56 fixed left-0 top-14 h-[calc(100vh-3.5rem)] shadow-inner transform transition-transform duration-200 z-[950]` }>
-                    <div className="w-full flex items-center justify-between">
+                    <div className="w-full flex items-center justify-center">
                         <Link to="/" className="transition-transform duration-200 hover:scale-105">
                             <img src={logo} alt="logo" className="w-12 h-12" />
                         </Link>

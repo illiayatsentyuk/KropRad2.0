@@ -1,6 +1,6 @@
 import { Outlet, Link, useLocation } from 'react-router-dom'
 import { useState } from 'react'
-import logo from '/vite.svg'
+import logo from '/logo.jpg'
 import { fetchLogout } from '../api/auth'
 import { useDispatch } from 'react-redux'
 import { clearUser, clearTokens } from '../store/store'

@@ -1,6 +1,6 @@
 import { Outlet, Link, useLocation } from 'react-router-dom'
 import { useState } from 'react'
-import logo from '/vite.svg'
+import logo from '/logo.jpg'
 
 const links = [
     {
@@ -36,7 +36,7 @@ export const MainLayout = () => {
                             <line x1="3" y1="18" x2="21" y2="18" />
                         </svg>
                     </button>
-                    <Link to="/" className="flex items-center gap-2">
+                    <Link to="/" className="flex justify-center items-center gap-2">
                         <img src={logo} alt="logo" className="w-6 h-6" />
                         <span className="text-sm text-white">KROP‑RAD</span>
                     </Link>

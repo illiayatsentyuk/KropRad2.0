@@ -4,10 +4,11 @@ import './index.css'
 import App from './App.jsx'
 import { store } from './store/store'
 import { Provider } from 'react-redux'
+import { Analytics } from "@vercel/analytics/next"
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-
+    <Analytics />
     <Provider store={store}>
       <App />
     </Provider>

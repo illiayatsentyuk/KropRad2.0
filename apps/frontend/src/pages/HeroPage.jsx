@@ -21,9 +21,6 @@ export const HeroPage = () => {
               безпеки та відповідальності.
             </p>
           </div>
-          <div className="w-full h-[200px] flex flex-col items-center justify-center">
-            <h2>Мета...</h2>
-          </div>
         </div>
       </div>
     </div>

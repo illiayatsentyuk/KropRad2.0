@@ -1,6 +1,8 @@
 import { useState } from "react"
 import { fetchSignin, fetchSignup } from "../api/auth"
 import { useNavigate } from "react-router-dom"
+import { useDispatch } from "react-redux"
+import { setTokens } from "../store/store"
 
 export const AuthForm = () => {
   const [isLogin, setIsLogin] = useState(true)
@@ -8,6 +10,7 @@ export const AuthForm = () => {
   const [errors, setErrors] = useState({ name: "", email: "", password: "", form: "" })
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
+  const dispatch = useDispatch()
 
   const validate = (v, loginMode) => {
     const nextErrors = { name: "", email: "", password: "", form: "" }
@@ -34,15 +37,19 @@ export const AuthForm = () => {
     if (hasFieldError) return
     setLoading(true)
     try {
+      let data
       if (isLogin) {
-        const data = await fetchSignin(values.email.trim(), values.password)
-        localStorage.setItem("refresh_token", data.refresh_token)
-        localStorage.setItem("access_token", data.access_token)
+        data = await fetchSignin(values.email.trim(), values.password)
       } else {
-        const data = await fetchSignup(values.name.trim(), values.email.trim(), values.password)
-        localStorage.setItem("refresh_token", data.refresh_token)
-        localStorage.setItem("access_token", data.access_token)
+        data = await fetchSignup(values.name.trim(), values.email.trim(), values.password)
       }
+      
+      // Store tokens in Redux store and localStorage
+      dispatch(setTokens({
+        accessToken: data.access_token,
+        refreshToken: data.refresh_token
+      }))
+      
       navigate("/")
       navigate(0)
     } catch (error) {

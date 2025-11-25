@@ -1,10 +1,13 @@
-const API_ORIGIN = import.meta.env.VITE_API_URL ?? 'https://krop-rad2-0-backend.vercel.app'
+import axios from "axios"
+import axiosInstance from "./axiosInstance"
+const API_ORIGIN = import.meta.env.VITE_API_URL ?? 'http://localhost:3000'
 
-const parseError = async (response) => {
-    let message = `Request failed with status ${response.status}`
+const parseError = (error) => {
+    let message = 'Request failed'
     let details = null
-    try {
-        const data = await response.json()
+
+    if (error.response) {
+        const data = error.response.data
         if (Array.isArray(data?.message)) {
             message = data.message.join('\n')
             details = data.message
@@ -12,63 +15,81 @@ const parseError = async (response) => {
             message = data.message
         } else if (typeof data?.error === 'string') {
             message = data.error
+        } else {
+            message = `Request failed with status ${error.response.status}`
         }
         return { message, details, raw: data }
-    } catch (e) {
-        return { message, details, raw: null }
     }
+
+    return { message: error.message || message, details, raw: null }
 }
 
 export const fetchSignin = async (email, password) => {
-    const response = await fetch(`${API_ORIGIN}/auth/local/signin`, {
-        method: 'POST',
-        body: JSON.stringify({ email, password }),
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    })
-    if (!response.ok) {
-        const err = await parseError(response)
+    try {
+        const response = await axios.post(`${API_ORIGIN}/auth/local/signin`,
+            { email, password },
+            {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }
+        )
+        return response.data
+    } catch (error) {
+        const err = parseError(error)
         throw new Error(err.message)
     }
-    return response.json()
 }
 
 export const fetchSignup = async (name, email, password) => {
-    const response = await fetch(`${API_ORIGIN}/auth/local/signup`, {
-        method: 'POST',
-        body: JSON.stringify({ name, email, password }),
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    })
-    if (!response.ok) {
-        const err = await parseError(response)
+    try {
+        const response = await axios.post(`${API_ORIGIN}/auth/local/signup`,
+            { name, email, password },
+            {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }
+        )
+        return response.data
+    } catch (error) {
+        const err = parseError(error)
         throw new Error(err.message)
     }
-    return response.json()
 }
 
-export const fetchMe = async (accessToken) => {
-    const response = await fetch(`${API_ORIGIN}/auth/me`, {
-        headers: {
-            'Authorization': `Bearer ${accessToken}`
-        }
-    })
-    const data = await response.json()
-    return data
+export const fetchMe = async () => {
+    const response = await axiosInstance.get('/auth/me')
+    return response.data
 }
 
-export const fetchLogout = async (accessToken) => {
-    const response = await fetch(`${API_ORIGIN}/auth/logout`, {
-        method: 'POST',
-        headers: {
-            'Authorization': `Bearer ${accessToken}`,
-            'Content-Type': 'application/json'
+export const fetchLogout = async () => {
+    try {
+        const response = await axiosInstance.post('/auth/logout', {}, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        if (response.status === 200) {
+            return { message: "Logged out" }
         }
-    })
-    if(response.status === 200) {
-        return {message: "Logged out"}
+        return { message: "Failed to logout" }
+    } catch (error) {
+        return { message: "Failed to logout" }
     }
-    return {message: "Failed to logout"}
+}
+
+export const fetchRefreshToken = async (refreshToken) => {
+    try {
+        const response = await axios.post(`${API_ORIGIN}/auth/refresh`, {}, {
+            headers: {
+                'Authorization': `Bearer ${refreshToken}`,
+                'Content-Type': 'application/json'
+            }
+        })
+        return response.data
+    } catch (error) {
+        const err = parseError(error)
+        throw new Error(err.message)
+    }
 }

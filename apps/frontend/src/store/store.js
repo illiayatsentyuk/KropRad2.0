@@ -55,6 +55,17 @@ const articlesSlice = createSlice({
   }
 });
 
+const loadingArticlesSlice = createSlice({
+  name: 'loadingArticles',
+  initialState: { loading: false },
+  reducers: {
+    setLoadingArticles: (state, action) => {
+      state.loading = action.payload;
+    }
+  }
+});
+
+export const { setLoadingArticles } = loadingArticlesSlice.actions;
 export const { setUser, clearUser } = userSlice.actions;
 export const { setTokens, clearTokens } = authSlice.actions;
 export const { setArticles, addArticle, updateArticle, deleteArticle } = articlesSlice.actions;
@@ -62,7 +73,8 @@ export const store = configureStore({
   reducer: { 
     user: userSlice.reducer, 
     auth: authSlice.reducer,
-    articles: articlesSlice.reducer 
+    articles: articlesSlice.reducer,
+    loadingArticles: loadingArticlesSlice.reducer
   }
 });
 

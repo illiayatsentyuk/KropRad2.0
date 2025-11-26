@@ -8,10 +8,11 @@ import { NotFoundPage } from './pages/404'
 import { fetchMe } from './api/auth'
 import { AdminLayout } from './layouts/AdminLayout'
 import { CreateArticle } from './pages/CreateArticle'
-import { setUser, clearUser } from './store/store'
+import { setUser, clearUser, setArticles, setLoadingArticles } from './store/store'
 import { useDispatch } from 'react-redux'
 import { ArticlePage } from './pages/Article'
 import { AboutPage } from './pages/About'
+import { fetchArticles } from './api/article'
 import MapComponent from './components/MapComponent'
 
 function App() {
@@ -36,6 +37,15 @@ function App() {
         dispatch(clearUser())
       })
     }
+    dispatch(setLoadingArticles(true))
+    fetchArticles().then(data => {
+        console.log(data)
+        dispatch(setArticles(data))
+    }).catch(error => {
+        console.log(error)
+    }).finally(() => {
+        dispatch(setLoadingArticles(false))
+    })
   }, [])
 
   let routes = (

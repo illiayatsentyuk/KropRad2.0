@@ -27,19 +27,19 @@ export const ArticlesPage = () => {
     const user = useSelector((state) => state.user.user)
     const isAdmin = user?.role === 'admin'
     const navigate = useNavigate()
-    const [loading, setLoading] = useState(true)
+    const loading = useSelector((state) => state.loadingArticles.loading)
     
-    useEffect(() => {
-        setLoading(true)
-        fetchArticles().then(data => {
-            console.log(data)
-            dispatch(setArticles(data))
-        }).catch(error => {
-            console.log(error)
-        }).finally(() => {
-            setLoading(false)
-        })
-    }, [])
+    // useEffect(() => {
+    //     setLoading(true)
+    //     fetchArticles().then(data => {
+    //         console.log(data)
+    //         dispatch(setArticles(data))
+    //     }).catch(error => {
+    //         console.log(error)
+    //     }).finally(() => {
+    //         setLoading(false)
+    //     })
+    // }, [])
 
     const handleEditArticle = (id) =>{
         navigate(`/edit-article/${id}`)

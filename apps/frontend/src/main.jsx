@@ -7,10 +7,12 @@ import { Provider } from 'react-redux'
 import { Analytics } from "@vercel/analytics/react"
 
 createRoot(document.getElementById('root')).render(
-  <StrictMode>
+  // <StrictMode>
+  <>
     <Analytics />
     <Provider store={store}>
       <App />
     </Provider>
-  </StrictMode>,
+  </>
+  // </StrictMode>,
 )

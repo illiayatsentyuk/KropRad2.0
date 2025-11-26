@@ -3,7 +3,7 @@ import { ReactionService } from './reaction.service';
 import { Public } from 'src/common/decorators';
 import { Roles } from 'src/common/decorators';
 import { RolesGuard } from 'src/common/guards';
-import { Role } from 'src/enum/role.enum';
+import { Role } from '@prisma/client';
 
 @Controller('reaction')
 export class ReactionController {
@@ -27,7 +27,7 @@ export class ReactionController {
       return this.reactionService.addReaction(articleId, reactionType, fingerprint, ip);
     }
 
-    @Roles(Role.ADMIN)
+    @Roles(Role.admin)
     @UseGuards(RolesGuard)
     @Get('average/:articleId')
     async getAverage(@Param('articleId') articleId: string) {
@@ -36,7 +36,7 @@ export class ReactionController {
       return this.reactionService.getAverageRating(id)
     }
 
-    @Roles(Role.ADMIN)
+    @Roles(Role.admin)
     @UseGuards(RolesGuard)
     @Get('distribution/:articleId')
     async getDistribution(@Param('articleId') articleId: string) {

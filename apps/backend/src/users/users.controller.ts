@@ -3,9 +3,9 @@ import { UsersService } from './users.service';
 import { Serialize } from 'src/interceptors/serialize.interceptor';
 import { UserDto } from './dto/user.dto';
 import { Roles } from 'src/common/decorators';
-import { Role } from 'src/enum/role.enum';
+import { Role } from '@prisma/client';
 
-@Roles(Role.ADMIN)
+@Roles(Role.admin)
 @Serialize(UserDto)
 @Controller('users')
 export class UsersController {

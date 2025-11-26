@@ -1,27 +1,30 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { Repository } from 'typeorm';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Article } from './entity/article.entity';
 import * as mammoth from 'mammoth';
 import * as fs from 'fs';
 import * as cheerio from 'cheerio';
 import { ReactionService } from 'src/reaction/reaction.service';
 import { ImagesService } from 'src/images/images.service';
+import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class ArticlesService {
     constructor(
-        @InjectRepository(Article) private articleRepository: Repository<Article>,
+        private prisma: PrismaService,
         private reactionService: ReactionService,
         private imagesService: ImagesService
     ) { }
 
     async getAllArticles() {
-        return this.articleRepository.find({ relations: ['reactions', "user"] })
+        return this.prisma.article.findMany({ 
+            include: { reactions: true, user: true } 
+        })
     }
 
     async getArticleById(id: number) {
-        return this.articleRepository.findOne({ where: { id }, relations: ['reactions', "user"] })
+        return this.prisma.article.findUnique({ 
+            where: { id }, 
+            include: { reactions: true, user: true } 
+        })
     }
 
     async createArticle(buffer: Buffer, userId: number) {
@@ -169,13 +172,16 @@ export class ArticlesService {
             'Без назви';
 
         // Збереження в базу
-        const article = this.articleRepository.create({
-            title,
-            content: blocks,
-            user: { id: userId },
+        const article = await this.prisma.article.create({
+            data: {
+                title,
+                content: blocks,
+                userId,
+            },
+            include: {
+                user: true,
+            }
         });
-
-        await this.articleRepository.save(article);
 
         return {
             message: 'Файл оброблено та збережено',
@@ -321,9 +327,12 @@ export class ArticlesService {
         await this.reactionService.deleteAllReaction(id)
 
         // Збереження в базу
-        const article = await this.articleRepository.update(id, {
-            title,
-            content: blocks,
+        const article = await this.prisma.article.update({
+            where: { id },
+            data: {
+                title,
+                content: blocks,
+            },
         });
 
         return {
@@ -334,7 +343,7 @@ export class ArticlesService {
 
     async deleteArticle(id: number) {
         // Load article to verify it exists
-        const article = await this.articleRepository.findOne({ where: { id } })
+        const article = await this.prisma.article.findUnique({ where: { id } })
         if (!article) {
             throw new BadRequestException('Article not found')
         }
@@ -342,7 +351,7 @@ export class ArticlesService {
         // Since images are now stored as base64 in the content, no file cleanup needed
         await this.reactionService.deleteAllReaction(id)
 
-        await this.articleRepository.delete(id)
+        await this.prisma.article.delete({ where: { id } })
         return { message: 'deleted' }
     }
 }

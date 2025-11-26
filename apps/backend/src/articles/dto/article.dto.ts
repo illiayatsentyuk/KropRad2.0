@@ -1,6 +1,5 @@
 import { Expose, Transform } from "class-transformer";
-import { Article } from "../entity/article.entity";
-import { Role } from "src/enum/role.enum";
+import { Role } from "@prisma/client";
 
 export class ArticleDto {
     @Expose()

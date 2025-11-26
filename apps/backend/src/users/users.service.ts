@@ -1,13 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { User } from './entity/user.entity';
-import { Repository } from 'typeorm';
+import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class UsersService {
-    constructor(@InjectRepository(User) private userRepository: Repository<User>) {}
+    constructor(private prisma: PrismaService) {}
 
-    async getUsers(): Promise<User[]> {
-        return this.userRepository.find();
+    async getUsers() {
+        return this.prisma.user.findMany();
     }
 }

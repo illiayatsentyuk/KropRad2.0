@@ -1,38 +1,36 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { Reaction } from './entity/reaction.entity';
+import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class ReactionService {
   constructor(
-    @InjectRepository(Reaction)
-    private repo: Repository<Reaction>,
+    private prisma: PrismaService,
   ) { }
 
   async deleteAllReaction(articleId: number) {
-    await this.repo.delete({ article: { id: articleId } });
+    await this.prisma.reaction.deleteMany({ where: { articleId } });
   }
 
   async addReaction(articleId: number, reactionType: string, fingerprint: string, ip: string) {
-    const exists = await this.repo.exists({
-      where: { article: { id: articleId }, fingerprint },
+    const exists = await this.prisma.reaction.findFirst({
+      where: { articleId, fingerprint },
     });
     if (exists) throw new BadRequestException('Already reacted');
 
     // Optional rate-limit check
-    const recent = await this.repo.count({
-      where: { ip, article: { id: articleId } },
+    const recent = await this.prisma.reaction.count({
+      where: { ip, articleId },
     });
     if (recent > 10) throw new BadRequestException('Too many reactions from this IP');
 
-    const reaction = this.repo.create({ article: { id: articleId }, reactionType, fingerprint, ip });
-    return this.repo.save(reaction);
+    return this.prisma.reaction.create({ 
+      data: { articleId, reactionType, fingerprint, ip } 
+    });
   }
 
   async getAverageRating(articleId: number) {
-    const reactions = await this.repo.find({
-      where: { article: { id: articleId } },
+    const reactions = await this.prisma.reaction.findMany({
+      where: { articleId },
       select: { reactionType: true },
     })
     const ratings = reactions
@@ -46,8 +44,8 @@ export class ReactionService {
   }
 
   async getRatingDistribution(articleId: number) {
-    const reactions = await this.repo.find({
-      where: { article: { id: articleId } },
+    const reactions = await this.prisma.reaction.findMany({
+      where: { articleId },
       select: { reactionType: true },
     })
     const distribution: Record<number, number> = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 }

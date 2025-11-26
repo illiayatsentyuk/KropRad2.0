@@ -4,52 +4,52 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { User } from 'src/users/entity/user.entity';
-import { Not, Repository } from 'typeorm';
 import { SignupDto } from './dto';
 import { Tokens } from './types';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
-import { Role } from 'src/enum/role.enum';
+import { Role } from '@prisma/client';
 import { SigninDto } from './dto/signin.dto';
+import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class AuthService {
   constructor(
-    @InjectRepository(User) private userRepo: Repository<User>,
+    private prisma: PrismaService,
     private jwtService: JwtService,
   ) { }
 
   async getMe(userId: number) {
-    const user = await this.userRepo.findOneBy({ id: userId });
+    const user = await this.prisma.user.findUnique({ where: { id: userId } });
     if (!user) throw new NotFoundException('No user found');
-    if(user.role === Role.ADMIN){
-      return { user, message: "Authenticated", role: Role.ADMIN };
+    if(user.role === Role.admin){
+      return { user, message: "Authenticated", role: Role.admin };
     }
-    return { user, message: "Authenticated", role: Role.USER };
+    return { user, message: "Authenticated", role: Role.user };
   }
 
   async signupLocal(dto: SignupDto): Promise<Tokens> {
     const hash = await this.hashData(dto.password);
-    const user = await this.userRepo.find({ where: { email: dto.email } });
-    if (user.length >= 1) {
+    const existingUser = await this.prisma.user.findUnique({ where: { email: dto.email } });
+    if (existingUser) {
       throw new BadRequestException('Email already in use');
     }
-    const newUser = this.userRepo.create({
-      email: dto.email,
-      hash,
-      name: dto.name,
+    
+    const savedUser = await this.prisma.user.create({
+      data: {
+        email: dto.email,
+        hash,
+        name: dto.name,
+      },
     });
 
-    const savedUser = await this.userRepo.save(newUser);
     const tokens = await this.getTokens(savedUser.id, savedUser.email, savedUser.role);
     await this.updateRtHash(savedUser.id, tokens.refresh_token);
     return tokens;
   }
 
   async signinLocal(dto: SigninDto): Promise<Tokens> {
-    const [user] = await this.userRepo.find({ where: { email: dto.email } });
+    const user = await this.prisma.user.findUnique({ where: { email: dto.email } });
     if (!user) throw new NotFoundException('No user found');
 
     const passwordMatches = await bcrypt.compare(dto.password, user.hash);
@@ -61,11 +61,14 @@ export class AuthService {
   }
 
   async logout(userId: number) {
-    await this.userRepo.update({ id: userId }, { hashedRt: null as any });
+    await this.prisma.user.update({ 
+      where: { id: userId }, 
+      data: { hashedRt: null } 
+    });
   }
 
   async refreshTokens(userId: number, rt: string) {
-    const user = await this.userRepo.findOneBy({ id: userId });
+    const user = await this.prisma.user.findUnique({ where: { id: userId } });
 
     if (!user || !user.hashedRt) throw new ForbiddenException('Access Denied');
 
@@ -114,6 +117,9 @@ export class AuthService {
 
   async updateRtHash(userId: number, rt: string) {
     const hash = await this.hashData(rt);
-    await this.userRepo.update({ id: userId }, { hashedRt: hash });
+    await this.prisma.user.update({ 
+      where: { id: userId }, 
+      data: { hashedRt: hash } 
+    });
   }
 }

@@ -8,7 +8,7 @@ import { extname } from 'path';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { BadRequestException } from '@nestjs/common';
 import { GetCurrentUserId, Roles } from 'src/common/decorators';
-import { Role } from 'src/enum/role.enum';
+import { Role } from '@prisma/client';
 import { CreateArticleDto } from './dto/create-article.dto';
 import { Public } from 'src/common/decorators';
 import { Serialize } from 'src/interceptors/serialize.interceptor';
@@ -35,7 +35,7 @@ export class ArticlesController {
         return this.articlesService.getArticleById(id)
     }
 
-    @Roles(Role.ADMIN)
+    @Roles(Role.admin)
     @UseGuards(RolesGuard)
     @Post("/")
     @UseInterceptors(
@@ -57,7 +57,7 @@ export class ArticlesController {
         return this.articlesService.createArticle(file.buffer, userId);
     }
 
-    @Roles(Role.ADMIN)
+    @Roles(Role.admin)
     @UseGuards(RolesGuard)
     @Put("/:id")
     @UseInterceptors(
@@ -78,7 +78,7 @@ export class ArticlesController {
         return this.articlesService.updateArticle(id, file.buffer)
     }
 
-    @Roles(Role.ADMIN)
+    @Roles(Role.admin)
     @UseGuards(RolesGuard)
     @Delete("/:id")
     deleteArticle(@Param("id") id: number) {

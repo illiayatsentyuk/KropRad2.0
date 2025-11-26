@@ -28,18 +28,29 @@ export const ArticlesPage = () => {
     const isAdmin = user?.role === 'admin'
     const navigate = useNavigate()
     const [loading, setLoading] = useState(true)
+    const [refreshing, setRefreshing] = useState(false)
     
-    useEffect(() => {
+    const loadArticles = (forceFresh = false) => {
         setLoading(true)
-        fetchArticles().then(data => {
+        fetchArticles({ forceFresh }).then(data => {
             console.log(data)
             dispatch(setArticles(data))
         }).catch(error => {
             console.log(error)
         }).finally(() => {
             setLoading(false)
+            setRefreshing(false)
         })
+    }
+
+    useEffect(() => {
+        loadArticles()
     }, [])
+
+    const handleRefresh = () => {
+        setRefreshing(true)
+        loadArticles(true) // Force fresh data from server
+    }
 
     const handleEditArticle = (id) =>{
         navigate(`/edit-article/${id}`)
@@ -58,6 +69,33 @@ export const ArticlesPage = () => {
     }
     return (
         <div className="flex flex-col gap-6 w-full items-center justify-start py-8 px-4 sm:py-10 sm:px-6">
+            {/* Refresh Button */}
+            {!loading && articles && articles.length > 0 && (
+                <div className="w-full max-w-6xl mx-auto flex justify-end">
+                    <button
+                        onClick={handleRefresh}
+                        disabled={refreshing}
+                        className="flex items-center gap-2 px-4 py-2 bg-white text-[#2B59C3] border-2 border-[#E9ECF2] rounded-lg font-semibold shadow-sm hover:border-[#2B59C3] hover:shadow-md transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                        title="Оновити статті з сервера"
+                    >
+                        <svg 
+                            className={`w-5 h-5 ${refreshing ? 'animate-spin' : ''}`} 
+                            fill="none" 
+                            stroke="currentColor" 
+                            viewBox="0 0 24 24"
+                        >
+                            <path 
+                                strokeLinecap="round" 
+                                strokeLinejoin="round" 
+                                strokeWidth={2} 
+                                d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" 
+                            />
+                        </svg>
+                        {refreshing ? 'Оновлення...' : 'Оновити'}
+                    </button>
+                </div>
+            )}
+            
             {loading ? (
                 <div className="w-full max-w-3xl text-center bg-white rounded-2xl shadow-xl p-12 border border-[#E9ECF2]">
                     <div className="flex flex-col items-center justify-center gap-4">

@@ -13,7 +13,7 @@ const links = [
     },
     {
         to: "/about",
-        label: "Про проект"
+        label: "Про проєкт"
     },
 ]
 

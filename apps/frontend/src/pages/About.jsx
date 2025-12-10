@@ -6,7 +6,7 @@ export const AboutPage = () => {
                 <p className="mt-4 text-base md:text-lg text-gray-600 text-center">
                     KROP‑RAD — це ініціатива, що допомагає жителям Кропивницького швидко перевіряти
                     і візуалізувати орієнтовний рівень радіації у своєму районі. Наша мета —
-                    підвищити поінформованість і сприяти безпечнішому середовищу.
+                    підвищити поінформованість і сприяти безпечному середовищу.
                 </p>
 
                 <div className="mt-10 space-y-6">
@@ -41,13 +41,6 @@ export const AboutPage = () => {
                         <p className="mt-3 text-gray-700 leading-relaxed">
                             Дані мають інформативний характер і не є офіційною довідкою. На значення можуть впливати
                             погодні умови, обладнання та інші фактори. За підозри на підвищений рівень — звертайтеся до відповідних служб.
-                        </p>
-                    </section>
-
-                    <section className="bg-white/90 rounded-2xl shadow-sm ring-1 ring-black/5 p-6 md:p-8">
-                        <h2 className="text-xl font-semibold text-gray-900">Зворотний зв’язок</h2>
-                        <p className="mt-3 text-gray-700 leading-relaxed">
-                            Маєте пропозиції або зауваження? Напишіть нам через форму зворотного зв’язку або створіть issue в репозиторії проєкту.
                         </p>
                     </section>
 

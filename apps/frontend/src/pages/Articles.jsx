@@ -127,19 +127,24 @@ export const ArticlesPage = () => {
                     </div>
                 </div>
             ) : (
-                <div className="w-full max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
-                    {articles.map(article => (
-                        <Article
-                            key={article.id}
-                            id={article.id}
-                            title={article.title}
-                            description={getExcerptFromBlocks(article.content)}
-                            author={article.user?.name || ""}
-                            handleDelete={handleDelete}
-                            handleEditArticle={handleEditArticle}
-                        />
-                    ))}
-                </div>
+                <>
+                    <div className="w-full max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
+                        {articles.map(article => (
+                            <Article
+                                key={article.id}
+                                id={article.id}
+                                title={article.title}
+                                description={getExcerptFromBlocks(article.content)}
+                                author={article.user?.name || ""}
+                                handleDelete={handleDelete}
+                                handleEditArticle={handleEditArticle}
+                            />
+                        ))}
+                    </div>
+                    <p className="mt-8 text-sm text-gray-500 text-center w-full">
+                        Сайт розроблений командою КЗ "Ліцею НТН" КМР" — RoboLegion, а саме за участі Яцентюка Іллі. Автором інформаційних матеріалів і статей є учень 11 класу — Попович Максим.
+                    </p>
+                </>
             )}
         </div>
     )

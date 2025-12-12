@@ -15,8 +15,11 @@ export const CreateArticle = () => {
         }
     }, [id, isEdit])
     return (
-        <div className="flex w-full items-center justify-center py-10 px-6">
+        <div className="flex flex-col w-full items-center justify-center py-10 px-6">
             <CreateArticleForm article={article} isEdit={isEdit} />
+            <p className="mt-8 text-sm text-gray-500 text-center">
+                Сайт розроблений командою КЗ "Ліцею НТН" КМР" — RoboLegion, а саме за участі Яцентюка Іллі. Автором інформаційних матеріалів і статей є учень 11 класу — Попович Максим.
+            </p>
         </div>
     )
 }

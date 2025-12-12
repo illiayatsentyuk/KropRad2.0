@@ -30,6 +30,9 @@ export const NotFoundPage = () => {
         <div className="mt-8 text-sm text-[#6C7A89]">
           If you think this is a mistake, please check the URL or return home.
         </div>
+        <p className="mt-8 text-sm text-gray-500 text-center">
+          Сайт розроблений командою КЗ "Ліцею НТН" КМР" — RoboLegion, а саме за участі Яцентюка Іллі. Автором інформаційних матеріалів і статей є учень 11 класу — Попович Максим.
+        </p>
       </div>
     </div>
   )

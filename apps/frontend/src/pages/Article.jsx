@@ -34,6 +34,9 @@ export const ArticlePage = () => {
                 <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
                     <BigArticle article={article} />
                 </div>
+                <p className="mt-8 text-sm text-gray-500 text-center">
+                    Сайт розроблений командою КЗ "Ліцею НТН" КМР" — RoboLegion, а саме за участі Яцентюка Іллі. Автором інформаційних матеріалів і статей є учень 11 класу — Попович Максим.
+                </p>
             </div>
         </div>
     )
